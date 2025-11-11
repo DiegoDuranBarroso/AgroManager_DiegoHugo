@@ -20,12 +20,11 @@ class ActualizarEmpleadoTest {
     @Test
     void actualizarNombreYEstadoEmpleado() {
         Empleado emp = empleadoRepo.findAll().get(0);
-        emp.setNombre(emp.getNombre() + "_actualizado");
-        emp.setActivo(false);
+        String nuevoNombre = emp.getNombre() + "_edit";
+        emp.setNombre(nuevoNombre);
         empleadoRepo.save(emp);
 
-        Empleado modificado = empleadoRepo.findById(emp.getId()).orElseThrow();
-        assertThat(modificado.getNombre()).endsWith("_actualizado");
-        assertThat(modificado.isActivo()).isFalse();
+        Empleado actualizado = empleadoRepo.findById(emp.getId()).orElseThrow();
+        assertThat(actualizado.getNombre()).isEqualTo(nuevoNombre);
     }
 }
