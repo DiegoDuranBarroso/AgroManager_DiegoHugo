@@ -20,10 +20,10 @@ class CambiarEstadoFincaTest {
     @Test
     void cambiarEstadoFincaAProduccion() {
         Finca finca = fincaRepo.findAll().get(0);
-        finca.setEstado(EstadoFinca.PRODUCCION);
+        finca.setEstado(EstadoFinca.MANTENIMIENTO);
         fincaRepo.save(finca);
 
         Finca actualizada = fincaRepo.findById(finca.getId()).orElseThrow();
-        assertThat(actualizada.getEstado()).isEqualTo(EstadoFinca.PRODUCCION);
+        assertThat(actualizada.getEstado()).isEqualTo(EstadoFinca.MANTENIMIENTO);
     }
 }
