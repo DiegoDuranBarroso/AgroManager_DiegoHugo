@@ -15,16 +15,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class EliminarEmpleadoTest {
 
-    @Autowired private EmpleadoRepository empleadoRepo;
+    @Autowired
+    EmpleadoRepository empleadoRepo;
+    @Autowired
+    UsuarioRepository usuarioRepo;
+    @Autowired
+    TareaRepository tareaRepo;
+    @Autowired
+    NominaRepository nominaRepo;
+    @Autowired
+    FichajeRepository fichajeRepo;
+    @Autowired
+    AsignacionRepository asignacionRepo;
+    @Autowired
+    ContratoRepository contratoRepo;
 
     @Test
     void eliminarEmpleadoExistente() {
-        Empleado emp = empleadoRepo.findAll().get(0);
-        Long id = emp.getId();
+        Empleado emp = empleadoRepo.findAll().get(1);
+        Long empId = emp.getId();
+        Long userId = emp.getUsuario().getId();
 
-        empleadoRepo.deleteById(id);
+        empleadoRepo.deleteById(empId);
         empleadoRepo.flush();
 
-        assertThat(empleadoRepo.findById(id)).isEmpty();
+        assertThat(empleadoRepo.findById(empId)).isEmpty();
+        assertThat(usuarioRepo.findById(userId)).isEmpty();
+        assertThat(tareaRepo.findByEmpleadoId(empId)).isEmpty();
+        assertThat(nominaRepo.findByEmpleadoIdOrderByPeriodoInicioDesc(empId)).isEmpty();
+        assertThat(fichajeRepo.findByEmpleadoId(empId)).isEmpty();
+        assertThat(asignacionRepo.findByEmpleadoId(empId)).isEmpty();
+        assertThat(contratoRepo.findByEmpleadoId(empId, org.springframework.data.domain.Sort.unsorted())).isEmpty();
     }
 }

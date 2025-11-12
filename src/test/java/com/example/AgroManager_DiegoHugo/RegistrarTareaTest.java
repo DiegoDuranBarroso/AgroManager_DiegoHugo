@@ -1,4 +1,4 @@
-package com.example.AgroManager_DiegoHugo.testsCasosUso;
+package com.example.AgroManager_DiegoHugo;
 
 import com.example.AgroManager_DiegoHugo.data.model.*;
 import com.example.AgroManager_DiegoHugo.data.repositories.*;

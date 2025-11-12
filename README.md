@@ -1,5 +1,4 @@
-# ENTREGA 02
-## ACCESO DE DATOS
+## PROYECTO MyDAI: AgroManager
 
 ---
 
@@ -81,7 +80,6 @@ de **actualizar el estado de las fincas** desde el terreno.
 
 La base de datos de **AgroManager** se implementa mediante **Docker** para asegurar un entorno reproducible, aislado y fácil de desplegar.
 El contenedor principal utiliza **MySQL** como sistema gestor de base de datos y se comunica con la aplicación **Spring Boot** a través de la red interna definida en el archivo `docker-compose.yml`.
-Ademas hay un script .sql en la carpeta `docker/mysql/initdb` que crea la base de datos `agromanager` al iniciar el contenedor.
 
 
 ### ⚙️ Pasos de despliegue

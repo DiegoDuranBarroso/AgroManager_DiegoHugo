@@ -24,8 +24,11 @@ class RegistrarEmpleadoTest {
     void registrarEmpleado_conUsuarioActivo() {
         Usuario usuario = usuarioRepo.save(new Usuario("emp_" + UUID.randomUUID(), "hashedpwd", Rol.EMPLEADO, true));
         Empleado empleado = new Empleado("98765432Z", "Juan Pérez", true, usuario);
+        Usuario usuario1 = usuarioRepo.save(new Usuario("lolo" + UUID.randomUUID(), "hashedpwd", Rol.EMPLEADO, true));
+        Empleado empleado1 = new Empleado("12345678A", "DIEGO DURAN", true, usuario1);
 
         Empleado saved = empleadoRepo.save(empleado);
+        Empleado savedd = empleadoRepo.save(empleado1);
         assertThat(saved.getId()).isNotNull();
         assertThat(saved.getUsuario().isActivo()).isTrue();
         assertThat(saved.getUsuario().getRol()).isEqualTo(Rol.EMPLEADO);
