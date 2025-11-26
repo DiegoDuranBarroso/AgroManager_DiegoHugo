@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Empleados</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">AgroManager</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Empleados</h2>
+        <a th:href="@{/empleados/nuevo}" class="btn btn-success">+ Nuevo Empleado</a>
+    </div>
+
+    <!-- BUSCADOR -->
+    <form class="input-group mb-4" th:action="@{/empleados/}" method="get">
+        <input type="text" class="form-control" placeholder="Buscar por nombre..."
+               name="nombre" th:value="${filtroNombre}">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+        <a th:href="@{/empleados/}" class="btn btn-outline-secondary">Limpiar</a>
+    </form>
+
+    <!-- TABLA DE EMPLEADOS -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+
+            <table class="table table-striped mb-0">
+                <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="empleado : ${empleados}">
+                    <td th:text="${empleado.id}"></td>
+                    <td th:text="${empleado.dni}"></td>
+                    <td th:text="${empleado.nombre}"></td>
+                    <td>
+                        <span th:text="${empleado.activo} ? 'Sí' : 'No'"
+                              th:classappend="${empleado.activo} ? 'text-success' : 'text-danger'">
+                        </span>
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                           th:href="@{|/empleados/${empleado.id}/editar|}">
+                            Editar
+                        </a>
+
+                        <form th:action="@{|/empleados/${empleado.id}/eliminar|}"
+                              method="post" class="d-inline">
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Seguro que quieres eliminar este empleado?')">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

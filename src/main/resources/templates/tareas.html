@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Tareas</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">AgroManager</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Tareas</h2>
+        <a th:href="@{/tareas/nueva}" class="btn btn-success">
+            + Nueva Tarea
+        </a>
+    </div>
+
+    <!-- FILTRO POR EMPLEADO -->
+    <form class="row g-2 mb-4" th:action="@{/tareas/}" method="get">
+        <div class="col-md-4">
+            <label class="form-label">Empleado</label>
+            <select class="form-select" name="empleadoId">
+                <option th:value="">-- Todos --</option>
+                <option th:each="emp : ${empleados}"
+                        th:value="${emp.id}"
+                        th:selected="${empleadoSeleccionado} != null and ${empleadoSeleccionado} == ${emp.id}"
+                        th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
+            <a th:href="@{/tareas/}" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+
+    <!-- TABLA DE TAREAS -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Empleado</th>
+                    <th>Finca</th>
+                    <th>Tipo</th>
+                    <th>Horas</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tarea : ${tareas}">
+                    <td th:text="${tarea.id}"></td>
+                    <td th:text="${tarea.fecha}"></td>
+                    <td th:text="${tarea.empleado != null ? tarea.empleado.nombre : '—'}"></td>
+                    <td th:text="${tarea.finca != null ? tarea.finca.nombre : '—'}"></td>
+                    <td th:text="${tarea.tipo}"></td>
+                    <td th:text="${#numbers.formatDecimal(tarea.horas, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td>
+                        <form th:action="@{|/tareas/${tarea.id}/eliminar|}"
+                              method="post" class="d-inline">
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Eliminar esta tarea?')">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a th:href="@{/}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+
+</div>
+
+</body>
+</html>

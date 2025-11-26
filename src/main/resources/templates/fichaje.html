@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichaje de Empleado</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">AgroManager</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- INFO DEL EMPLEADO -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Fichaje</h2>
+        <p class="mb-1">
+            <strong>Empleado:</strong>
+            <span th:text="${empleado.nombre}"></span>
+            (<span th:text="${empleado.dni}"></span>)
+        </p>
+    </div>
+
+    <!-- ESTADO ACTUAL DEL FICHAJE -->
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="card-title">Estado actual</h5>
+
+                    <div th:if="${fichajeAbierto != null}">
+                        <p class="mb-1">
+                            <strong>Estado:</strong>
+                            <span class="badge bg-success">En curso</span>
+                        </p>
+                        <p class="mb-1">
+                            <strong>Finca:</strong>
+                            <span th:text="${fichajeAbierto.finca != null ? fichajeAbierto.finca.nombre : '—'}"></span>
+                        </p>
+                        <p class="mb-1">
+                            <strong>Inicio:</strong>
+                            <span th:text="${fichajeAbierto.inicio}"></span>
+                        </p>
+                        <p class="text-muted mt-2">
+                            Para terminar la jornada, pulsa <strong>“Finalizar fichaje”</strong>.
+                        </p>
+                    </div>
+
+                    <div th:if="${fichajeAbierto == null}">
+                        <p class="mb-1">
+                            <strong>Estado:</strong>
+                            <span class="badge bg-secondary">Sin fichaje activo</span>
+                        </p>
+                        <p class="text-muted mt-2">
+                            No hay ningún fichaje abierto actualmente. Puedes iniciar uno seleccionando una finca.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULARIO: INICIAR FICHAJE -->
+        <div class="col-md-6" th:if="${fichajeAbierto == null}">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Iniciar fichaje</h5>
+
+                    <form th:action="@{/fichajes/inicio}" method="post">
+
+                        <!-- Empleado oculto -->
+                        <input type="hidden" name="empleadoId" th:value="${empleado.id}"/>
+
+                        <!-- Selección de finca -->
+                        <div class="mb-3">
+                            <label class="form-label">Finca</label>
+                            <select class="form-select" name="fincaId" required>
+                                <option th:value="" selected disabled>-- Selecciona una finca --</option>
+                                <option th:each="f : ${fincas}"
+                                        th:value="${f.id}"
+                                        th:text="${f.nombre}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            Iniciar fichaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÓN: FINALIZAR FICHAJE -->
+        <div class="col-md-6" th:if="${fichajeAbierto != null}">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Finalizar fichaje</h5>
+                    <p class="text-muted">
+                        Cuando termines tu jornada en esta finca, pulsa el botón para cerrar el fichaje.
+                    </p>
+
+                    <form th:action="@{/fichajes/fin}" method="post">
+                        <input type="hidden" name="empleadoId" th:value="${empleado.id}"/>
+                        <button class="btn btn-danger"
+                                onclick="return confirm('¿Finalizar el fichaje actual?')">
+                            Finalizar fichaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- VOLVER -->
+    <div class="mt-4">
+        <a th:href="@{/}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+
+</div>
+
+</body>
+</html>

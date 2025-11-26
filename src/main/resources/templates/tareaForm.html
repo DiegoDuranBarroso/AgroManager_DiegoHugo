@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Tarea</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">AgroManager</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <h2 class="fw-bold mb-4">Nueva Tarea</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form th:action="@{/tareas/}" method="post">
+
+                <!-- EMPLEADO -->
+                <div class="mb-3">
+                    <label class="form-label">Empleado</label>
+                    <select class="form-select" name="empleadoId" required>
+                        <option th:value=""
+                                th:if="${empleadoIdSeleccionado == null}"
+                                selected disabled>-- Selecciona un empleado --</option>
+
+                        <option th:each="emp : ${empleados}"
+                                th:value="${emp.id}"
+                                th:selected="${empleadoIdSeleccionado != null and empleadoIdSeleccionado == emp.id}"
+                                th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- FINCA -->
+                <div class="mb-3">
+                    <label class="form-label">Finca</label>
+                    <select class="form-select" name="fincaId" required>
+                        <option th:value="" selected disabled>-- Selecciona una finca --</option>
+                        <option th:each="f : ${fincas}"
+                                th:value="${f.id}"
+                                th:text="${f.nombre}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- FECHA -->
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" class="form-control" name="fecha" required>
+                </div>
+
+                <!-- TIPO -->
+                <div class="mb-3">
+                    <label class="form-label">Tipo de tarea</label>
+                    <input type="text" class="form-control" name="tipo"
+                           placeholder="Siembra, riego, poda..." required>
+                </div>
+
+                <!-- HORAS -->
+                <div class="mb-3">
+                    <label class="form-label">Horas trabajadas</label>
+                    <input type="number" class="form-control" name="horas"
+                           step="0.25" min="0.25" required>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">Registrar tarea</button>
+                    <a th:href="@{/tareas/}" class="btn btn-secondary">Cancelar</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
