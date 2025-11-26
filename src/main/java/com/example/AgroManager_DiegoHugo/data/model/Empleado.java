@@ -48,6 +48,7 @@ public class Empleado {
 
     // Getters y setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getDni() { return dni; }
     public void setDni(String dni) { this.dni = dni; }

@@ -39,9 +39,12 @@ public class Finca {
         this.gerente = gerente;
     }
 
-    // Getters y setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -66,5 +69,29 @@ public class Finca {
 
     public void setGerente(Gerente gerente) {
         this.gerente = gerente;
+    }
+
+    public List<Asignacion> getAsignaciones() {
+        return asignaciones;
+    }
+
+    public void setAsignaciones(List<Asignacion> asignaciones) {
+        this.asignaciones = asignaciones;
+    }
+
+    public List<Fichaje> getFichajes() {
+        return fichajes;
+    }
+
+    public void setFichajes(List<Fichaje> fichajes) {
+        this.fichajes = fichajes;
+    }
+
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<Tarea> tareas) {
+        this.tareas = tareas;
     }
 }
