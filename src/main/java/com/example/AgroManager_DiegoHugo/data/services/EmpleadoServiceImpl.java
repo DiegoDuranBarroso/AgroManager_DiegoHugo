@@ -87,4 +87,14 @@ public class EmpleadoServiceImpl implements EmpleadoService {
         }
         empleadoRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Empleado> encontrarPorUsuarioId(Long usuarioId) {
+        if (usuarioId == null || usuarioId <= 0) {
+            throw new IllegalArgumentException("ID de usuario inválido: " + usuarioId);
+        }
+        return empleadoRepository.findByUsuarioId(usuarioId);
+    }
+
 }

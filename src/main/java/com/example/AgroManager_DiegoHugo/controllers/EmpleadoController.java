@@ -34,7 +34,7 @@ public class EmpleadoController {
         } else {
             model.addAttribute("empleados", empleadoService.encontrarTodos());
         }
-        return "empleados"; // templates/empleados.html
+        return "empleados";
     }
 
     @GetMapping("/nuevo")

@@ -52,7 +52,7 @@ class ContratoExtraTests {
     void vigenteEnFecha_actual() {
         var emp = empleadoRepo.findAll().get(0);
         var vigente = contratoRepo.findVigentesEn(emp.getId(), LocalDate.now());
-        // Puede que ya exista por _data.sql o por otros tests
+        // Puede que ya exista por data.sql o por otros tests
         assertThat(vigente.size()).isGreaterThanOrEqualTo(0);
     }
 }

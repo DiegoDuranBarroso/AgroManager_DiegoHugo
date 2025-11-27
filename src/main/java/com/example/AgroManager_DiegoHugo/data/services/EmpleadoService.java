@@ -20,4 +20,6 @@ public interface EmpleadoService {
     Empleado guardar(Empleado empleado);
 
     void eliminarPorId(Long id);
+
+    Optional<Empleado> encontrarPorUsuarioId(Long usuarioId);
 }
