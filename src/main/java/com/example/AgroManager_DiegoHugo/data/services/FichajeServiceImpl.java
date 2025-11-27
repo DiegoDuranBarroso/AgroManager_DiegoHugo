@@ -95,4 +95,27 @@ public class FichajeServiceImpl implements FichajeService {
         fichaje.setEstado("CERRADO");
         return fichajeRepository.save(fichaje);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Fichaje> fichajesTodos() {
+        return fichajeRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Fichaje> fichajePorId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID de fichaje inválido: " + id);
+        }
+        return fichajeRepository.findById(id);
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID de fichaje inválido: " + id);
+        }
+        fichajeRepository.deleteById(id);
+    }
 }

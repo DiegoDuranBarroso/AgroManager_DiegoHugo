@@ -40,36 +40,42 @@ public class ContratoController {
         } else {
             contratos = contratoService.encontrarTodos();
         }
+
         model.addAttribute("contratos", contratos);
         model.addAttribute("empleados", empleadoService.encontrarActivos());
         return "contratos"; // templates/contratos.html
     }
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevoContrato(@RequestParam(name = "empleadoId", required = false) Long empleadoId,
-                                                 Model model) {
+    public String mostrarFormularioNuevoContrato(
+            @RequestParam(name = "empleadoId", required = false) Long empleadoId,
+            Model model) {
+
         model.addAttribute("contrato", new Contrato());
         model.addAttribute("empleados", empleadoService.encontrarActivos());
         model.addAttribute("tiposContrato", Arrays.asList(TipoContrato.values()));
         model.addAttribute("empleadoIdSeleccionado", empleadoId);
+
         return "contratoForm"; // templates/contratoForm.html
     }
 
-    @PostMapping("/")
-    public String crearContrato(@RequestParam Long empleadoId,
-                                @RequestParam TipoContrato tipo,
-                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @PostMapping("/guardar")
+    public String crearContrato(@RequestParam("empleadoId") Long empleadoId,
+                                @RequestParam("tipo") TipoContrato tipo,
+                                @RequestParam("fechaInicio")
+                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                 LocalDate fechaInicio,
-                                @RequestParam(required = false)
+                                @RequestParam(value = "fechaFin", required = false)
                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                 LocalDate fechaFin,
-                                @RequestParam BigDecimal salarioBase,
-                                @RequestParam BigDecimal tarifaHora) {
+                                @RequestParam("salarioBase") BigDecimal salarioBase,
+                                @RequestParam("tarifaHora") BigDecimal tarifaHora) {
 
         Empleado empleado = empleadoService.encontrarPorId(empleadoId)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
 
         contratoService.crearContrato(empleado, tipo, fechaInicio, fechaFin, salarioBase, tarifaHora);
+
         return "redirect:/contratos/?empleadoId=" + empleadoId;
     }
 

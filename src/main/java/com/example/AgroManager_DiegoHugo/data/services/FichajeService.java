@@ -21,4 +21,11 @@ public interface FichajeService {
     Fichaje iniciarFichaje(Empleado empleado, Finca finca);
 
     Fichaje finalizarFichaje(Long empleadoId);
+
+    List<Fichaje> fichajesTodos();
+
+    Optional<Fichaje> fichajePorId(Long id);
+
+    void eliminarPorId(Long id);
+
 }

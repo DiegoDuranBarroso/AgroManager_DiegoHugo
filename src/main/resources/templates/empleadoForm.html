@@ -26,10 +26,13 @@
         <div class="card-body">
 
             <!-- FORMULARIO -->
-            <form th:action="${empleado.id == null} ? @{/empleados/} : @{|/empleados/${empleado.id}|}"
-                  th:object="${empleado}" method="post">
+            <form th:action="${empleado.id == null}
+                    ? @{/empleados/}
+                    : @{/empleados/{id}(id=${empleado.id})}"
+                  th:object="${empleado}"
+                  method="post">
 
-                <!-- DNI -->
+            <!-- DNI -->
                 <div class="mb-3">
                     <label class="form-label">DNI</label>
                     <input type="text" class="form-control" th:field="*{dni}" required>

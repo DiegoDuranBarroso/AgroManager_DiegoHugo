@@ -7,8 +7,8 @@
     <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
 </head>
+
 <body class="bg-light">
 
 <nav class="navbar navbar-dark bg-success">
@@ -21,7 +21,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">Fincas</h2>
-        <!-- Si en el futuro añades crear finca, aquí pondrías el botón -->
+        <!-- Botón de nueva finca en futuras ampliaciones -->
         <!-- <a th:href="@{/fincas/nueva}" class="btn btn-success">+ Nueva Finca</a> -->
     </div>
 
@@ -43,16 +43,28 @@
                 <tr th:each="finca : ${fincas}">
                     <td th:text="${finca.id}"></td>
                     <td th:text="${finca.nombre}"></td>
+
                     <td>
                         <span class="badge"
-                              th:classappend="${finca.estado.name() == 'SEMBRADA'} ? 'bg-primary' :
-                                              ${finca.estado.name() == 'MANTENIMIENTO'} ? 'bg-warning text-dark' :
-                                              ${finca.estado.name() == 'LISTA_COSECHA'} ? 'bg-success' :
-                                              'bg-secondary'"
+                              th:classappend="${
+                                  finca.estado.name() == 'SEMBRADA'
+                                      ? 'bg-primary'
+                                      : (
+                                          finca.estado.name() == 'MANTENIMIENTO'
+                                              ? 'bg-warning text-dark'
+                                              : (
+                                                  finca.estado.name() == 'LISTA_COSECHA'
+                                                      ? 'bg-success'
+                                                      : 'bg-secondary'
+                                                )
+                                        )
+                              }"
                               th:text="${finca.estado}">
                         </span>
                     </td>
+
                     <td th:text="${finca.gerente != null ? finca.gerente.nombre : '—'}"></td>
+
                     <td>
                         <a class="btn btn-sm btn-primary"
                            th:href="@{|/fincas/${finca.id}/editar|}">

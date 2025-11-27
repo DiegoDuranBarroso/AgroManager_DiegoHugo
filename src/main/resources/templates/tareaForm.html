@@ -18,20 +18,21 @@
 
 <div class="container mt-4">
 
-    <h2 class="fw-bold mb-4">Nueva Tarea</h2>
+    <h2 class="fw-bold mb-4">Registrar nueva tarea</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
 
+            <!-- IMPORTANTE: el controller espera POST a /tareas/ con:
+                 empleadoId, fincaId, fecha, tipo, horas -->
             <form th:action="@{/tareas/}" method="post">
 
                 <!-- EMPLEADO -->
                 <div class="mb-3">
                     <label class="form-label">Empleado</label>
                     <select class="form-select" name="empleadoId" required>
-                        <option th:value=""
-                                th:if="${empleadoIdSeleccionado == null}"
-                                selected disabled>-- Selecciona un empleado --</option>
+                        <!-- Opción “vacía” SIN th:value -->
+                        <option value="" th:text="'-- Selecciona empleado --'"></option>
 
                         <option th:each="emp : ${empleados}"
                                 th:value="${emp.id}"
@@ -45,7 +46,8 @@
                 <div class="mb-3">
                     <label class="form-label">Finca</label>
                     <select class="form-select" name="fincaId" required>
-                        <option th:value="" selected disabled>-- Selecciona una finca --</option>
+                        <option value="" th:text="'-- Selecciona finca --'"></option>
+
                         <option th:each="f : ${fincas}"
                                 th:value="${f.id}"
                                 th:text="${f.nombre}">
@@ -56,26 +58,36 @@
                 <!-- FECHA -->
                 <div class="mb-3">
                     <label class="form-label">Fecha</label>
-                    <input type="date" class="form-control" name="fecha" required>
+                    <input type="date"
+                           class="form-control"
+                           name="fecha"
+                           required>
                 </div>
 
                 <!-- TIPO -->
                 <div class="mb-3">
                     <label class="form-label">Tipo de tarea</label>
-                    <input type="text" class="form-control" name="tipo"
-                           placeholder="Siembra, riego, poda..." required>
+                    <input type="text"
+                           class="form-control"
+                           name="tipo"
+                           placeholder="Poda, riego, cosecha..."
+                           required>
                 </div>
 
                 <!-- HORAS -->
                 <div class="mb-3">
                     <label class="form-label">Horas trabajadas</label>
-                    <input type="number" class="form-control" name="horas"
-                           step="0.25" min="0.25" required>
+                    <input type="number"
+                           class="form-control"
+                           name="horas"
+                           min="0"
+                           step="0.25"
+                           required>
                 </div>
 
                 <!-- BOTONES -->
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-success">Registrar tarea</button>
+                    <button class="btn btn-success" type="submit">Guardar</button>
                     <a th:href="@{/tareas/}" class="btn btn-secondary">Cancelar</a>
                 </div>
 

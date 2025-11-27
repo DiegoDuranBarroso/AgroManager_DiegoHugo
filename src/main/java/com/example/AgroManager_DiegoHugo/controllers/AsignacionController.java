@@ -73,4 +73,6 @@ public class AsignacionController {
         asignacionService.cerrarAsignacion(id, fechaFin);
         return "redirect:/asignaciones/";
     }
+
+
 }
