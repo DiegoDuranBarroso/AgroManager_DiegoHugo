@@ -88,7 +88,7 @@ El contenedor principal utiliza **MySQL** como sistema gestor de base de datos y
 2. Ejecutar el siguiente comando para levantar los contenedores:
 
    ```bash
-   docker compose up --build
+   docker compose up -d
    ```
 
 3. Una vez iniciados los servicios, acceder al contenedor de MySQL:
