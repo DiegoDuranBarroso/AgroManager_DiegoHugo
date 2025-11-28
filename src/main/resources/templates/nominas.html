@@ -45,6 +45,10 @@
             <a th:href="@{/nominas/}" class="btn btn-outline-secondary">Limpiar</a>
         </div>
     </form>
+    <div th:if="${mensajeNomina}" class="alert alert-success mb-3" role="alert"
+         th:text="${mensajeNomina}">
+    </div>
+
 
     <!-- TABLA DE NOMINAS -->
     <div class="card shadow-sm">

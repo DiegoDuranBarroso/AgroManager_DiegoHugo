@@ -19,6 +19,10 @@
 <div class="container mt-4">
 
     <h2 class="fw-bold mb-4">Generar Nómina</h2>
+    <div th:if="${errorNomina}" class="alert alert-danger" role="alert"
+         th:text="${errorNomina}">
+    </div>
+
 
     <div class="card shadow-sm">
         <div class="card-body">

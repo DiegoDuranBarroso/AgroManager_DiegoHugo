@@ -19,22 +19,25 @@
 
 <div class="container mt-4">
 
-    <h2 class="fw-bold mb-4">Editar Finca</h2>
+    <h2 class="fw-bold mb-4">Editar estado de la finca</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <form th:object="${finca}"
-                  th:action="@{|/fincas/${finca.id}|}"
+            <!-- OJO: ya no usamos th:object, solo enviamos el estado -->
+            <form th:action="@{|/fincas/${finca.id}|}"
                   method="post">
 
-                <!-- Nombre -->
+                <!-- Nombre (solo lectura, NO editable) -->
                 <div class="mb-3">
                     <label class="form-label">Nombre de la finca</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" required>
+                    <input type="text"
+                           class="form-control"
+                           th:value="${finca.nombre}"
+                           readonly>
                 </div>
 
-                <!-- Gerente (solo lectura de momento) -->
+                <!-- Gerente (solo lectura, como ya tenías) -->
                 <div class="mb-3">
                     <label class="form-label">Gerente</label>
                     <input type="text" class="form-control"
@@ -42,7 +45,7 @@
                            readonly>
                 </div>
 
-                <!-- Estado -->
+                <!-- Estado (ÚNICO campo editable) -->
                 <div class="mb-3">
                     <label class="form-label">Estado</label>
                     <select class="form-select" name="estado">

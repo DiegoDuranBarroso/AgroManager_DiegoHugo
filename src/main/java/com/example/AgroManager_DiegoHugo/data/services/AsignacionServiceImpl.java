@@ -77,33 +77,51 @@ public class AsignacionServiceImpl implements AsignacionService {
             throw new IllegalArgumentException("La fecha de fin no puede ser anterior al inicio");
         }
 
+        // Tope de fecha para las consultas (evitamos LocalDate.MAX con MySQL)
+        LocalDate finConsulta = (fin != null) ? fin : LocalDate.of(9999, 12, 31);
+
         boolean solapa = asignacionRepository.existeSolapamiento(
                 empleado.getId(),
                 inicio,
-                fin != null ? fin : LocalDate.MAX
+                finConsulta
         );
         if (solapa) {
             throw new IllegalStateException("El empleado ya tiene una asignación activa que solapa con estas fechas");
         }
 
-        Asignacion asignacion = new Asignacion(inicio, fin, true, empleado, finca);
+        LocalDate hoy = LocalDate.now();
+        boolean activa = true;
+
+        if (fin != null && fin.isBefore(hoy) && inicio.isBefore(hoy)) {
+            activa = false;  // asignación histórica, ya cerrada
+        }
+
+        Asignacion asignacion = new Asignacion(inicio, fin, activa, empleado, finca);
         return asignacionRepository.save(asignacion);
     }
+
+
 
     @Override
     public Asignacion cerrarAsignacion(Long asignacionId, LocalDate fechaFin) {
         Asignacion asignacion = asignacionRepository.findById(asignacionId)
                 .orElseThrow(() -> new IllegalArgumentException("Asignación con ID " + asignacionId + " no encontrada"));
 
-        if (fechaFin == null) {
-            fechaFin = LocalDate.now();
-        }
-        if (fechaFin.isBefore(asignacion.getFechaInicio())) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior al inicio");
+        if (asignacion.getActiva() != null && !asignacion.getActiva()) {
+            return asignacion;
         }
 
-        asignacion.setFechaFin(fechaFin);
+        LocalDate fechaCierre = (fechaFin != null) ? fechaFin : LocalDate.now();
+
+
+        if (fechaCierre.isBefore(asignacion.getFechaInicio())) {
+            fechaCierre = asignacion.getFechaInicio();
+        }
+
+        asignacion.setFechaFin(fechaCierre);
         asignacion.setActiva(false);
+
         return asignacionRepository.save(asignacion);
     }
+
 }

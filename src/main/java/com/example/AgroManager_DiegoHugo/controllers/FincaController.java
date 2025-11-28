@@ -39,11 +39,18 @@ public class FincaController {
 
     @PostMapping("/{id}")
     public String actualizarFinca(@PathVariable Long id,
-                                  @ModelAttribute("finca") Finca finca,
                                   @RequestParam("estado") EstadoFinca estado) {
-        finca.setId(id); // ⚠ requiere setId en Finca
+
+        // Recuperamos la finca original de BD
+        Finca finca = fincaService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
+
+        // Solo modificamos el estado
         finca.setEstado(estado);
+
         fincaService.guardar(finca);
+
         return "redirect:/fincas/";
     }
+
 }

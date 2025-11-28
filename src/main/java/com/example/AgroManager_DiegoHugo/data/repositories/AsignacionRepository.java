@@ -9,16 +9,21 @@ import java.util.List;
 
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     List<Asignacion> findByEmpleadoId(Long empleadoId);
+
     List<Asignacion> findByFincaId(Long fincaId);
+
     List<Asignacion> findByActivaTrue();
 
     @Query("""
-        select case when count(a) > 0 then true else false end
-        from Asignacion a
-        where a.empleado.id = :empleadoId
-          and a.activa = true
-          and (a.fechaFin is null or a.fechaFin >= :inicio)
-          and a.fechaInicio <= :fin
-    """)
-    boolean existeSolapamiento(Long empleadoId, LocalDate inicio, LocalDate fin);
+                SELECT CASE WHEN COUNT(a) > 0 THEN TRUE ELSE FALSE END
+                FROM Asignacion a
+                WHERE a.empleado.id = :empleadoId
+                  AND a.activa = TRUE
+                  AND (a.fechaFin IS NULL OR a.fechaFin >= :fechaInicio)
+                  AND a.fechaInicio <= :fechaFin
+            """)
+    boolean existeSolapamiento(Long empleadoId,
+                               LocalDate fechaInicio,
+                               LocalDate fechaFin);
+
 }

@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -53,10 +54,17 @@ public class NominaController {
     }
 
     @GetMapping("/generar")
-    public String mostrarFormularioGenerarNomina(@RequestParam(name = "empleadoId", required = false) Long empleadoId,
-                                                 Model model) {
+    public String mostrarFormularioGenerarNomina(
+            @RequestParam(name = "empleadoId", required = false) Long empleadoId,
+            Model model) {
+
         model.addAttribute("empleados", empleadoService.encontrarActivos());
-        model.addAttribute("empleadoIdSeleccionado", empleadoId);
+
+        // Si venimos de una redirección con error, puede venir en el modelo como flash
+        if (!model.containsAttribute("empleadoIdSeleccionado")) {
+            model.addAttribute("empleadoIdSeleccionado", empleadoId);
+        }
+
         return "nominaForm"; // templates/nominaForm.html
     }
 
@@ -66,7 +74,8 @@ public class NominaController {
                                 LocalDate periodoInicio,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                 LocalDate periodoFin,
-                                @RequestParam(defaultValue = "BORRADOR") String estado) {
+                                @RequestParam(defaultValue = "BORRADOR") String estado,
+                                RedirectAttributes redirectAttributes) {
 
         Empleado empleado = empleadoService.encontrarPorId(empleadoId)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
@@ -74,16 +83,28 @@ public class NominaController {
         // Horas trabajadas en el periodo
         BigDecimal horas = tareaService.horasTrabajadasEntreFechas(empleadoId, periodoInicio, periodoFin);
 
-        // Cogemos contrato vigente en el periodo de fin (por ejemplo)
-        Contrato contrato = contratoService.contratosVigentesEn(empleadoId, periodoFin).stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No hay contrato vigente para el empleado en la fecha seleccionada"));
+        // Contratos vigentes en la fecha de fin
+        List<Contrato> contratosVigentes = contratoService.contratosVigentesEn(empleadoId, periodoFin);
+
+        if (contratosVigentes.isEmpty()) {
+            // No hay contrato vigente -> volvemos al formulario con mensaje de error
+            redirectAttributes.addFlashAttribute("errorNomina",
+                    "No hay ningún contrato vigente para ese empleado en la fecha seleccionada. " +
+                            "Revisa el periodo o crea un contrato primero.");
+            redirectAttributes.addFlashAttribute("empleadoIdSeleccionado", empleadoId);
+            return "redirect:/nominas/generar";
+        }
+
+        Contrato contrato = contratosVigentes.get(0);
 
         // Cálculo simplificado del total bruto: salarioBase + horas * tarifaHora
         BigDecimal totalBruto = contrato.getSalarioBase()
                 .add(contrato.getTarifaHora().multiply(horas));
 
         nominaService.generarNomina(empleado, periodoInicio, periodoFin, totalBruto, estado);
+
+        redirectAttributes.addFlashAttribute("mensajeNomina",
+                "Nómina generada correctamente para " + empleado.getNombre());
 
         return "redirect:/nominas/?empleadoId=" + empleadoId;
     }
