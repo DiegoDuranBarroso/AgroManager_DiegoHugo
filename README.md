@@ -119,19 +119,23 @@ A continuación, se explican los **casos de uso** reflejados en el diagrama del 
 | Nº | Actor | Caso de Uso | Descripción breve |
 |----|--------|--------------|------------------|
 | **1** | **Usuario** | **Registrarse como gerente** | Permite crear un usuario con rol GERENTE para acceder por primera vez al sistema. |
-| **2** | **Gerente** | **Registrar empleado** | Permite dar de alta a un nuevo trabajador en el sistema, introduciendo sus datos personales y laborales. |
-| **3** | **Gerente** | **Actualizar datos de empleado** | Modifica la información existente de un empleado (nombre, DNI, activo, etc.). |
-| **4** | **Gerente** | **Eliminar empleado** | Da de baja a un empleado y elimina en cascada sus asignaciones, fichajes, contratos, tareas y nóminas. |
-| **5** | **Gerente** | **Asignar empleado a finca** | Asocia un trabajador a una finca con una fecha de inicio y fin opcional. |
-| **6** | **Gerente** | **Cambiar estado de finca** | Actualiza el estado operativo de una finca (SEMBRADA, MANTENIMIENTO, BARBECHO…). |
-| **7** | **Gerente** | **Crear contrato de trabajo** | Registra un contrato laboral con tipo, fechas, salario base y tarifa por hora. |
-| **8** | **Gerente** | **Eliminar contrato de trabajo** | Elimina un contrato concreto y sus posibles dependencias. |
-| **9** | **Gerente** | **Generar nómina mensual** | Calcula automáticamente la nómina del empleado en función del contrato y tareas realizadas. |
-| **10** | **Gerente** | **Crear nuevas tareas** | Permite crear tareas directamente (sin que las registre el empleado). |
-| **11** | **Gerente** | **Eliminar tareas** | Elimina tareas previamente registradas por el sistema o un empleado. |
-| **12** | **Empleado** | **Registrar fichaje de inicio** | Registra el comienzo de la jornada laboral del empleado. |
-| **13** | **Empleado** | **Registrar fichaje de fin** | Finaliza el fichaje iniciado, marcando el fin de la jornada laboral. |
-| **14** | **Empleado** | **Registrar tarea realizada** | Permite registrar una tarea realizada con tipo y duración. |
+| **2** | **Usuario** | **Iniciar sesión como gerente** | Permite que un gerente acceda al sistema usando sus credenciales. |
+| **3** | **Usuario** | **Iniciar sesión como empleado** | Permite que un empleado acceda al sistema usando su ID y contraseña. |
+| **4** | **Gerente** | **Registrar empleado** | Da de alta a un nuevo trabajador introduciendo su información básica. |
+| **5** | **Gerente** | **Actualizar datos de empleado** | Modifica nombre, DNI, estado activo o usuario asociado. |
+| **6** | **Gerente** | **Eliminar empleado** | Elimina al empleado y borra en cascada asignaciones, fichajes, tareas, contratos y nóminas. |
+| **7** | **Gerente** | **Asignar empleado a finca** | Asocia un empleado a una finca con fecha de inicio y fin opcional. |
+| **8** | **Gerente** | **Cambiar estado de finca** | Modifica el estado operativo de una finca (SEMBRADA, MANTENIMIENTO, BARBECHO…). |
+| **9** | **Gerente** | **Crear contrato de trabajo** | Registra un contrato con tipo, fechas, salario y tarifa por hora. |
+| **10** | **Gerente** | **Eliminar contrato de trabajo** | Elimina un contrato específico y sus dependencias asociadas. |
+| **11** | **Gerente** | **Generar nómina mensual** | Calcula automáticamente la nómina en función del contrato y tareas realizadas. |
+| **12** | **Gerente** | **Crear nuevas tareas** | Permite generar tareas directamente desde la gestión del sistema. |
+| **13** | **Gerente** | **Eliminar tareas** | Elimina tareas previamente registradas en el sistema. |
+| **14** | **Empleado** | **Registrar fichaje de inicio** | Registra el inicio de la jornada laboral del empleado. |
+| **15** | **Empleado** | **Registrar fichaje de fin** | Marca el final de la jornada laboral. |
+| **16** | **Empleado** | **Registrar tarea realizada** | Permite introducir una tarea realizada indicando tipo y duración. |
+
+
 
 
 
