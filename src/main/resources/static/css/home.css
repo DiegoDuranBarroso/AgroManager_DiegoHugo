@@ -1,0 +1,61 @@
+/* ----- HERO FULLSCREEN ----- */
+.hero-header {
+    position: relative;
+    height: calc(100vh - 56px); /* Altura completa quitando navbar */
+    background-image: url('/img/agro.gif'); /* Asegúrate de que el GIF está aquí */
+    background-size: cover;   /* Ocupa toda la pantalla */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Efecto "parallax" suave */
+}
+
+/* Capa oscura transparente */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: brightness(0.7);
+}
+
+/* ----- TEXTO DEL HERO ----- */
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    transform: translateY(-50%);
+    z-index: 5;
+    color: white;
+}
+
+.hero-subtitle {
+    font-size: 2rem;
+    opacity: 0.9;
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 700;
+}
+
+.hero-mono {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    opacity: 0.9;
+}
+
+/* Botón principal */
+.btn-big {
+    padding: 12px 34px;
+    font-size: 1.2rem;
+    border-radius: 25px;
+}
+
+/* FOOTER */
+.main-footer {
+    background: #1e1e1e;
+    padding: 20px 0;
+}
+
+.footer-link {
+    color: #4caf50;
+}

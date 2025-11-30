@@ -34,6 +34,11 @@ public class HomeController {
     // ---- PÁGINA PRINCIPAL (menú con botones) ----
     @GetMapping("/")
     public String mostrarHome() {
+        return "home";
+    }
+
+    @GetMapping("/index")
+    public String menuInicial() {
         return "index";
     }
 
