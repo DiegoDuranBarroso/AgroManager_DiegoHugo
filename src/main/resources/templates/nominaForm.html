@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Generar Nómina</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+
 
     <!-- Bootstrap -->
     <link rel="stylesheet"
@@ -12,7 +14,13 @@
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">AgroManager</a>
+        <a class="navbar-brand" th:href="@{/home}">AgroManager - 👔Gerente</a>
+
+        <span class="navbar-text text-white"
+              th:text="'👤 ' + ${gerente.nombre}">
+    👤 Nombre gerente
+</span>
+
     </div>
 </nav>
 

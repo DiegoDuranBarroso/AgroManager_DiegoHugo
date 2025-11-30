@@ -30,38 +30,48 @@ public class FichajeController {
         this.fincaService = fincaService;
     }
 
+    // ================= LISTADO (solo empleado) =================
+    // Llamado desde empleadoHome:  /fichajes/?empleadoId=X
 
     @GetMapping("/")
-    public String verEstadoFichaje(
+    public String verFichajesEmpleado(
             @RequestParam(name = "empleadoId", required = false) Long empleadoId,
             Model model) {
 
-        model.addAttribute("empleados", empleadoService.encontrarTodos());
-        model.addAttribute("empleadoSeleccionado", empleadoId);
-
-        List<Fichaje> fichajes;
-        if (empleadoId != null) {
-            fichajes = fichajeService.fichajesDeEmpleado(empleadoId);
-        } else {
-            fichajes = fichajeService.fichajesTodos();
+        if (empleadoId == null) {
+            // Si alguien entra sin empleadoId, lo mandamos al “home”
+            return "redirect:/home";
         }
 
+        Empleado emp = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        List<Fichaje> fichajes = fichajeService.fichajesDeEmpleado(empleadoId);
+
+        model.addAttribute("empleado", emp);
         model.addAttribute("fichajes", fichajes);
 
-        return "fichaje";   // templates/fichaje.html
+        return "fichaje";   // templates/fichaje.html (versión solo empleado)
     }
 
+    // ================= NUEVO FICHAJE (inicio, solo empleado) =================
+    // Llamado desde empleadoHome: /fichajes/nuevo?empleadoId=X
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevoFichaje(Model model) {
+    public String mostrarFormularioNuevoFichaje(
+            @RequestParam("empleadoId") Long empleadoId,
+            Model model) {
 
-        Fichaje fichaje = new Fichaje();   // entidad vacía
+        Empleado emp = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        Fichaje fichaje = new Fichaje();
 
         model.addAttribute("fichaje", fichaje);
-        model.addAttribute("empleados", empleadoService.encontrarTodos());
+        model.addAttribute("empleado", emp);                  // solo este empleado
         model.addAttribute("fincas", fincaService.encontrarTodas());
 
-        return "fichajeForm";  // templates/fichajeForm.html
+        return "fichajeForm";
     }
 
     @PostMapping("/")
@@ -76,24 +86,21 @@ public class FichajeController {
 
         fichajeService.iniciarFichaje(empleado, finca);
 
+        // Volver al listado de ese empleado
         return "redirect:/fichajes/?empleadoId=" + empleadoId;
     }
 
-    @PostMapping("/{id}/salida")
-    public String marcarSalida(@PathVariable Long id) {
+    // ================= MARCAR SALIDA (solo empleado) =================
+    // Llamado desde la tabla de fichajes: /fichajes/fin?empleadoId=X
 
-        Fichaje fichaje = fichajeService.fichajePorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Fichaje no encontrado"));
-
-        Long empleadoId = (fichaje.getEmpleado() != null) ? fichaje.getEmpleado().getId() : null;
-
-        fichajeService.finalizarFichaje(fichaje.getEmpleado().getId());
-
-        if (empleadoId != null) {
-            return "redirect:/fichajes/?empleadoId=" + empleadoId;
-        }
-        return "redirect:/fichajes/";
+    @PostMapping("/fin")
+    public String registrarFin(@RequestParam Long empleadoId) {
+        fichajeService.finalizarFichaje(empleadoId);
+        return "redirect:/fichajes/?empleadoId=" + empleadoId;
     }
+
+    // ================= ELIMINAR FICHAJE (opcional, p.ej. para gerente) =================
+    // Si más adelante tienes una vista de gerente con borrado, reutilizas esto.
 
     @PostMapping("/{id}/eliminar")
     public String eliminarFichaje(@PathVariable Long id) {
@@ -101,32 +108,16 @@ public class FichajeController {
         Fichaje fichaje = fichajeService.fichajePorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Fichaje no encontrado"));
 
-        Long empleadoId = (fichaje.getEmpleado() != null) ? fichaje.getEmpleado().getId() : null;
+        Long empleadoId = (fichaje.getEmpleado() != null)
+                ? fichaje.getEmpleado().getId()
+                : null;
 
         fichajeService.eliminarPorId(id);
 
         if (empleadoId != null) {
             return "redirect:/fichajes/?empleadoId=" + empleadoId;
         }
-        return "redirect:/fichajes/";
-    }
-
-
-    @PostMapping("/inicio")
-    public String registrarInicio(@RequestParam Long empleadoId,
-                                  @RequestParam Long fincaId) {
-        Empleado empleado = empleadoService.encontrarPorId(empleadoId)
-                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
-        Finca finca = fincaService.encontrarPorId(fincaId)
-                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
-
-        fichajeService.iniciarFichaje(empleado, finca);
-        return "redirect:/fichajes/?empleadoId=" + empleadoId;
-    }
-
-    @PostMapping("/fin")
-    public String registrarFin(@RequestParam Long empleadoId) {
-        fichajeService.finalizarFichaje(empleadoId);
-        return "redirect:/fichajes/?empleadoId=" + empleadoId;
+        // Si no sabemos a qué empleado volver, mandamos al home
+        return "redirect:/home";
     }
 }

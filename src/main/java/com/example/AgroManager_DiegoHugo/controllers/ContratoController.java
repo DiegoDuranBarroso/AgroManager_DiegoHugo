@@ -2,9 +2,13 @@ package com.example.AgroManager_DiegoHugo.controllers;
 
 import com.example.AgroManager_DiegoHugo.data.model.Contrato;
 import com.example.AgroManager_DiegoHugo.data.model.Empleado;
+import com.example.AgroManager_DiegoHugo.data.model.Gerente;
+import com.example.AgroManager_DiegoHugo.data.model.Rol;
 import com.example.AgroManager_DiegoHugo.data.model.TipoContrato;
+import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.ContratoService;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
+import com.example.AgroManager_DiegoHugo.data.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,12 +26,18 @@ public class ContratoController {
 
     private final ContratoService contratoService;
     private final EmpleadoService empleadoService;
+    private final UsuarioService usuarioService;
+    private final GerenteRepository gerenteRepository;
 
     @Autowired
     public ContratoController(ContratoService contratoService,
-                              EmpleadoService empleadoService) {
+                              EmpleadoService empleadoService,
+                              UsuarioService usuarioService,
+                              GerenteRepository gerenteRepository) {
         this.contratoService = contratoService;
         this.empleadoService = empleadoService;
+        this.usuarioService = usuarioService;
+        this.gerenteRepository = gerenteRepository;
     }
 
     @GetMapping("/")
@@ -43,6 +53,15 @@ public class ContratoController {
 
         model.addAttribute("contratos", contratos);
         model.addAttribute("empleados", empleadoService.encontrarActivos());
+
+        // Añadimos gerente logueado (si lo hay) para mostrar su nombre en la vista
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
+            if (usuario.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(usuario.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
+
         return "contratos"; // templates/contratos.html
     }
 
@@ -55,6 +74,14 @@ public class ContratoController {
         model.addAttribute("empleados", empleadoService.encontrarActivos());
         model.addAttribute("tiposContrato", Arrays.asList(TipoContrato.values()));
         model.addAttribute("empleadoIdSeleccionado", empleadoId);
+
+        // También añadimos el gerente para el navbar
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
+            if (usuario.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(usuario.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
 
         return "contratoForm"; // templates/contratoForm.html
     }

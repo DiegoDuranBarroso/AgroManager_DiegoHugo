@@ -1,15 +1,3 @@
--- Opcional: solo si quieres limpiar antes (cuidado en producción)
--- SET FOREIGN_KEY_CHECKS = 0;
--- TRUNCATE TABLE asignacion;
--- TRUNCATE TABLE contrato;
--- TRUNCATE TABLE fichaje;
--- TRUNCATE TABLE nomina;
--- TRUNCATE TABLE tarea;
--- TRUNCATE TABLE finca;
--- TRUNCATE TABLE empleado;
--- TRUNCATE TABLE gerente;
--- TRUNCATE TABLE usuario;
--- SET FOREIGN_KEY_CHECKS = 1;
 
 --------------------------------
 -- USUARIOS (Rol: GERENTE/EMPLEADO)

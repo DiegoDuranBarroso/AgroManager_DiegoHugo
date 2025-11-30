@@ -30,6 +30,17 @@ public class TareaServiceImpl implements TareaService {
         return tareaRepository.findAll();
     }
 
+    /**
+     * Método de conveniencia para el controlador.
+     * Equivalente a {@link #encontrarTodas()}.
+     */
+    @Transactional(readOnly = true)
+    public List<Tarea> todasLasTareas() {
+        return tareaRepository.findAll();
+        // o si prefieres:
+        // return encontrarTodas();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Tarea> encontrarPorId(Long id) {

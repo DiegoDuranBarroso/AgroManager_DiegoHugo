@@ -6,6 +6,8 @@ import com.example.AgroManager_DiegoHugo.data.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -97,4 +99,50 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Usuario> validarLogin(String username, String password) {
+
+        if (username == null || username.trim().isEmpty() ||
+                password == null || password.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<Usuario> opt = usuarioRepository.findByUsername(username);
+        if (opt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Usuario usuario = opt.get();
+
+        String stored = usuario.getPasswordHash();
+
+        if (stored == null || !stored.startsWith("{noop}")) {
+            return Optional.empty();
+        }
+
+        String storedPlain = stored.substring(6);
+
+        if (!storedPlain.equals(password)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(usuario);
+    }
+
+    public Optional<Usuario> obtenerUsuarioEnSesion() {
+        Long id = (Long) ((ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes())
+                .getRequest()
+                .getSession()
+                .getAttribute("usuarioId");
+
+        if (id == null) return Optional.empty();
+
+        return encontrarPorId(id);
+    }
+
+
+
 }

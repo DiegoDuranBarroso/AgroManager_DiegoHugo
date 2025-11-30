@@ -26,4 +26,7 @@ public interface TareaService {
     Tarea registrarTarea(Empleado empleado, Finca finca, LocalDate fecha, String tipo, BigDecimal horas);
 
     void eliminarPorId(Long id);
+
+    List<Tarea> todasLasTareas();
+
 }

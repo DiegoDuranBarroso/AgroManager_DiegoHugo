@@ -3,10 +3,14 @@ package com.example.AgroManager_DiegoHugo.controllers;
 import com.example.AgroManager_DiegoHugo.data.model.Contrato;
 import com.example.AgroManager_DiegoHugo.data.model.Empleado;
 import com.example.AgroManager_DiegoHugo.data.model.Nomina;
+import com.example.AgroManager_DiegoHugo.data.model.Rol;
+import com.example.AgroManager_DiegoHugo.data.model.Usuario;
+import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.ContratoService;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
 import com.example.AgroManager_DiegoHugo.data.services.NominaService;
 import com.example.AgroManager_DiegoHugo.data.services.TareaService;
+import com.example.AgroManager_DiegoHugo.data.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -17,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/nominas")
@@ -26,21 +31,28 @@ public class NominaController {
     private final EmpleadoService empleadoService;
     private final TareaService tareaService;
     private final ContratoService contratoService;
+    private final UsuarioService usuarioService;
+    private final GerenteRepository gerenteRepository;
 
     @Autowired
     public NominaController(NominaService nominaService,
                             EmpleadoService empleadoService,
                             TareaService tareaService,
-                            ContratoService contratoService) {
+                            ContratoService contratoService,
+                            UsuarioService usuarioService,
+                            GerenteRepository gerenteRepository) {
         this.nominaService = nominaService;
         this.empleadoService = empleadoService;
         this.tareaService = tareaService;
         this.contratoService = contratoService;
+        this.usuarioService = usuarioService;
+        this.gerenteRepository = gerenteRepository;
     }
 
     @GetMapping("/")
     public String listarNominas(@RequestParam(name = "empleadoId", required = false) Long empleadoId,
                                 Model model) {
+
         List<Nomina> nominas;
         if (empleadoId != null) {
             nominas = nominaService.nominasDeEmpleado(empleadoId);
@@ -50,6 +62,15 @@ public class NominaController {
         }
         model.addAttribute("nominas", nominas);
         model.addAttribute("empleados", empleadoService.encontrarActivos());
+
+        // Añadir gerente al modelo si hay usuario en sesión con rol GERENTE
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
+            if (usuario.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(usuario.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
+
         return "nominas"; // templates/nominas.html
     }
 
@@ -60,10 +81,17 @@ public class NominaController {
 
         model.addAttribute("empleados", empleadoService.encontrarActivos());
 
-        // Si venimos de una redirección con error, puede venir en el modelo como flash
         if (!model.containsAttribute("empleadoIdSeleccionado")) {
             model.addAttribute("empleadoIdSeleccionado", empleadoId);
         }
+
+        // Añadir gerente al modelo si hay usuario en sesión con rol GERENTE
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
+            if (usuario.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(usuario.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
 
         return "nominaForm"; // templates/nominaForm.html
     }
@@ -87,7 +115,6 @@ public class NominaController {
         List<Contrato> contratosVigentes = contratoService.contratosVigentesEn(empleadoId, periodoFin);
 
         if (contratosVigentes.isEmpty()) {
-            // No hay contrato vigente -> volvemos al formulario con mensaje de error
             redirectAttributes.addFlashAttribute("errorNomina",
                     "No hay ningún contrato vigente para ese empleado en la fecha seleccionada. " +
                             "Revisa el periodo o crea un contrato primero.");

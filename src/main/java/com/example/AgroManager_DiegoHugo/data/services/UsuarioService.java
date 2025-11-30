@@ -23,4 +23,8 @@ public interface UsuarioService {
     void desactivar(Long id);
 
     void eliminarPorId(Long id);
+
+    Optional<Usuario> validarLogin(String username, String password);
+
+    Optional<Usuario> obtenerUsuarioEnSesion();
 }
