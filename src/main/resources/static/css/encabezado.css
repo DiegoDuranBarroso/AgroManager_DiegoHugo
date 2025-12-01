@@ -1,0 +1,20 @@
+/* Caja verde redondeada del logo */
+.brand-box {
+    background: rgba(0, 0, 0, 0.10);
+    padding: 6px 16px;
+    border-radius: 40px;
+}
+
+/* Icono */
+.brand-logo {
+    height: 40px;        /* un poco más pequeño también */
+    margin-right: 10px;
+}
+
+/* Texto elegante más pequeño */
+.brand-text {
+    font-size: 1.3rem;   /* tamaño reducido */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+}

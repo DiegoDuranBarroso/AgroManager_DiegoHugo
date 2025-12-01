@@ -4,44 +4,51 @@
     <meta charset="UTF-8">
     <title>Tareas</title>
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    <link rel="stylesheet" th:href="@{/css/encabezado.css}">
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 <body class="bg-light">
 
 <nav class="navbar navbar-dark bg-success">
-    <div class="container-fluid">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Texto de la marca: cambia según sea empleado o gerente -->
-        <a class="navbar-brand"
+        <!-- Logo + texto dinámico según EMPLEADO o GERENTE -->
+        <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <span th:text="${modo == 'EMPLEADO'} ?
-                           'AgroManager - 🦺Empleado' :
-                           'AgroManager - 👔Gerente'">
+
+            <!-- Logo -->
+            <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
+
+            <!-- Texto de la marca como antes -->
+            <span class="brand-text"
+                  th:text="${modo == 'EMPLEADO'} ?
+                           'AGROMANAGER - 🦺 Empleado' :
+                           'AGROMANAGER - 👔 Gerente'">
                 AgroManager
             </span>
         </a>
 
-        <!-- Nombre de la persona logueada -->
+        <!-- Nombre del usuario logueado (gerente) -->
         <span class="navbar-text text-white"
               th:if="${gerente != null}"
               th:text="|👤 ${gerente.nombre}|">
-    Nombre usuario
-</span>
+            👤 Nombre usuario
+        </span>
 
+        <!-- Nombre del usuario logueado (empleado) -->
         <span class="navbar-text text-white"
               th:if="${gerente == null and empleadoSesion != null}"
               th:text="|👤 ${empleadoSesion.nombre}|">
-    Nombre usuario
-</span>
-
-
-
+            👤 Nombre usuario
+        </span>
 
     </div>
 </nav>
+
 
 
 <div class="container mt-4">
