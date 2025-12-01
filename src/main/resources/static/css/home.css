@@ -2,7 +2,7 @@
 .hero-header {
     position: relative;
     height: calc(100vh - 56px); /* Altura completa quitando navbar */
-    background-image: url('/img/agro.gif'); /* Asegúrate de que el GIF está aquí */
+    background-image: url('/img/agro.gif'); /* v=2 */
     background-size: cover;   /* Ocupa toda la pantalla */
     background-position: center;
     background-repeat: no-repeat;
