@@ -23,4 +23,6 @@ public interface AsignacionService {
     Asignacion asignarEmpleadoAFinca(Empleado empleado, Finca finca, LocalDate inicio, LocalDate fin);
 
     Asignacion cerrarAsignacion(Long asignacionId, LocalDate fechaFin);
+
+    void eliminarAsignacion(Long asignacionId);
 }

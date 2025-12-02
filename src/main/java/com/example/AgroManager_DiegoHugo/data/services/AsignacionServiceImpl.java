@@ -124,4 +124,17 @@ public class AsignacionServiceImpl implements AsignacionService {
         return asignacionRepository.save(asignacion);
     }
 
+    @Override
+    public void eliminarAsignacion(Long asignacionId) {
+        if (asignacionId == null || asignacionId <= 0) {
+            throw new IllegalArgumentException("ID de asignación inválido: " + asignacionId);
+        }
+
+        if (!asignacionRepository.existsById(asignacionId)) {
+            throw new IllegalArgumentException("Asignación con ID " + asignacionId + " no encontrada");
+        }
+
+        asignacionRepository.deleteById(asignacionId);
+    }
+
 }

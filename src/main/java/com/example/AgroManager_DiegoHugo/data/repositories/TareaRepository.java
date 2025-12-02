@@ -20,4 +20,6 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
           and t.fecha between :inicio and :fin
     """)
     BigDecimal sumHoras(Long empleadoId, LocalDate inicio, LocalDate fin);
+
+    void deleteByFincaId(Long fincaId);
 }

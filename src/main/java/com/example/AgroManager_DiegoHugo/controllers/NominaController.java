@@ -135,4 +135,15 @@ public class NominaController {
 
         return "redirect:/nominas/?empleadoId=" + empleadoId;
     }
+
+    @PostMapping("/{id}/eliminar")
+    public String eliminarNomina(@PathVariable Long id,
+                                 RedirectAttributes redirectAttributes) {
+        nominaService.eliminarPorId(id);
+        redirectAttributes.addFlashAttribute("mensajeNomina", "Nómina eliminada correctamente.");
+        return "redirect:/nominas/";
+    }
+
+
+
 }

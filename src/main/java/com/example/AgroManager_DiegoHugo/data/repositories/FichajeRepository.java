@@ -12,4 +12,7 @@ public interface FichajeRepository extends JpaRepository<Fichaje, Long> {
     List<Fichaje> findByEmpleadoId(Long empleadoId);
     List<Fichaje> findByInicioBetween(Instant desde, Instant hasta);
     List<Fichaje> findByEmpleadoIdAndInicioBetween(Long empleadoId, Instant desde, Instant hasta);
+    List<Fichaje> findByFincaId(Long fincaId);
+
+    void deleteByFincaId(Long fincaId);
 }

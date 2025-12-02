@@ -25,5 +25,6 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     boolean existeSolapamiento(Long empleadoId,
                                LocalDate fechaInicio,
                                LocalDate fechaFin);
+    void deleteByFincaId(Long fincaId);
 
 }

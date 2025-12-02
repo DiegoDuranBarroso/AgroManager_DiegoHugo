@@ -105,4 +105,12 @@ public class AsignacionController {
         asignacionService.cerrarAsignacion(id, fechaFin);
         return "redirect:/asignaciones/";
     }
+
+    // ===== ELIMINAR ASIGNACIÓN =====
+    @PostMapping("/{id}/eliminar")
+    public String eliminarAsignacion(@PathVariable Long id) {
+        asignacionService.eliminarAsignacion(id);
+        return "redirect:/asignaciones/";
+    }
+
 }

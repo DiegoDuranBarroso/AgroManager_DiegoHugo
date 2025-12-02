@@ -23,4 +23,5 @@ public interface FincaService {
     void eliminarPorId(Long id);
 
     Finca cambiarEstado(Long fincaId, EstadoFinca nuevoEstado);
+
 }

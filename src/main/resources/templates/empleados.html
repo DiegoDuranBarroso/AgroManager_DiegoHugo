@@ -44,13 +44,28 @@
         <a th:href="@{/empleados/nuevo}" class="btn btn-success">+ Nuevo Empleado</a>
     </div>
 
-    <!-- BUSCADOR -->
-    <form class="input-group mb-4" th:action="@{/empleados/}" method="get">
-        <input type="text" class="form-control" placeholder="Buscar por nombre..."
-               name="nombre" th:value="${filtroNombre}">
-        <button class="btn btn-outline-success" type="submit">Buscar</button>
-        <a th:href="@{/empleados/}" class="btn btn-outline-secondary">Limpiar</a>
+    <!-- FILTRO POR EMPLEADO -->
+    <form class="row g-2 mb-4" th:action="@{/empleados/}" method="get">
+        <div class="col-md-4">
+            <label class="form-label">Empleado</label>
+            <select class="form-select" name="empleadoId">
+                <!-- opción “todos” -->
+                <option value="">-- Todos --</option>
+                <option th:each="emp : ${empleados}"
+                        th:value="${emp.id}"
+                        th:selected="${empleadoSeleccionado != null and empleadoSeleccionado == emp.id}"
+                        th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
+            <a th:href="@{/empleados/}" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
     </form>
+    <div th:if="${mensajeNomina}" class="alert alert-success mb-3" role="alert"
+         th:text="${mensajeNomina}">
+    </div>
 
     <!-- TABLA DE EMPLEADOS -->
     <div class="card shadow-sm">
@@ -142,7 +157,7 @@
         </div>
 
         <p class="mb-0 text-secondary">
-            APP creada por <strong>Diego Durán Barroso</strong>y <strong>Hugo Sánchez de la Roda Rivera</strong>.
+            APP creada por <strong>Diego Durán Barroso</strong> y <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
 
     </div>

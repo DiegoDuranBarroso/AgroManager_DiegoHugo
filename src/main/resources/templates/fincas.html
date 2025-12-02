@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Fincas</title>
+
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
-
 
     <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 
 <body class="bg-light">
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
         <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
@@ -36,12 +38,16 @@
     </div>
 </nav>
 
+<!-- CONTENIDO PRINCIPAL -->
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">Fincas</h2>
-        <!-- Botón de nueva finca en futuras ampliaciones -->
-        <!-- <a th:href="@{/fincas/nueva}" class="btn btn-success">+ Nueva Finca</a> -->
+
+        <!-- NUEVA FINCA -->
+        <a th:href="@{/fincas/nueva}" class="btn btn-success">
+            + Nueva Finca
+        </a>
     </div>
 
     <div class="card shadow-sm">
@@ -85,10 +91,21 @@
                     <td th:text="${finca.gerente != null ? finca.gerente.nombre : '—'}"></td>
 
                     <td>
+                        <!-- Editar -->
                         <a class="btn btn-sm btn-primary"
                            th:href="@{|/fincas/${finca.id}/editar|}">
                             Editar
                         </a>
+
+                        <!-- Eliminar finca (y todo lo asociado) -->
+                        <form th:action="@{|/fincas/${finca.id}/eliminar|}"
+                              method="post"
+                              class="d-inline">
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Eliminar esta finca y todas sus asignaciones, tareas y fichajes asociados?')">
+                                Eliminar
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
@@ -104,6 +121,7 @@
 
 </div>
 
+<!-- FOOTER -->
 <footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
     <div class="container text-center text-white">
 
@@ -142,7 +160,8 @@
         </div>
 
         <p class="mb-0 text-secondary">
-            APP creada por <strong>Diego Durán Barroso</strong>y <strong>Hugo Sánchez de la Roda Rivera</strong>.
+            APP creada por <strong>Diego Durán Barroso</strong> y
+            <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
 
     </div>

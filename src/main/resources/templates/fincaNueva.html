@@ -2,83 +2,58 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Editar Finca</title>
+    <title>Nueva Finca</title>
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
 
-
-    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-
 </head>
 <body class="bg-light">
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-
-        <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <!-- Nombre del gerente logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${gerente.nombre}">
             👤 Nombre gerente
         </span>
-
     </div>
 </nav>
 
 <div class="container mt-4">
 
-    <h2 class="fw-bold mb-4">Editar estado de la finca</h2>
+    <h2 class="fw-bold mb-4">Crear nueva finca</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <!-- OJO: ya no usamos th:object, solo enviamos el estado -->
-            <form th:action="@{|/fincas/${finca.id}|}"
-                  method="post">
+            <form th:action="@{/fincas/guardar}" method="post">
 
-                <!-- Nombre (solo lectura, NO editable) -->
                 <div class="mb-3">
                     <label class="form-label">Nombre de la finca</label>
-                    <input type="text"
-                           class="form-control"
-                           th:value="${finca.nombre}"
-                           readonly>
+                    <input type="text" class="form-control" name="nombre" required>
                 </div>
 
-                <!-- Gerente (solo lectura, como ya tenías) -->
                 <div class="mb-3">
-                    <label class="form-label">Gerente</label>
-                    <input type="text" class="form-control"
-                           th:value="${finca.gerente != null ? finca.gerente.nombre : 'Sin gerente asignado'}"
-                           readonly>
-                </div>
-
-                <!-- Estado (ÚNICO campo editable) -->
-                <div class="mb-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
+                    <label class="form-label">Estado inicial</label>
+                    <select class="form-select" name="estado" required>
                         <option th:each="est : ${estados}"
                                 th:value="${est}"
-                                th:selected="${est} == ${finca.estado}"
                                 th:text="${est}">
                         </option>
                     </select>
                 </div>
 
-                <!-- BOTONES -->
                 <div class="mt-4">
-                    <button class="btn btn-success" type="submit">Guardar cambios</button>
+                    <button class="btn btn-success" type="submit">Guardar finca</button>
                     <a th:href="@{/fincas/}" class="btn btn-secondary">Cancelar</a>
                 </div>
 
@@ -91,11 +66,9 @@
 
 <footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
     <div class="container text-center text-white">
-
         <p class="mb-2">
             © 2025 <strong>AgroManager</strong> — Todos los derechos reservados.
         </p>
-
         <p class="mb-3">
             Contacto:
             <a href="mailto:contacto@agromanager.com"
@@ -103,33 +76,9 @@
                 contacto@agromanager.com
             </a>
         </p>
-
-        <div class="mb-3">
-            <a href="https://facebook.com" target="_blank" class="text-white mx-2">
-                <i class="bi bi-facebook" style="font-size: 1.5rem;"></i>
-            </a>
-
-            <a href="https://twitter.com" target="_blank" class="text-white mx-2">
-                <i class="bi bi-twitter-x" style="font-size: 1.5rem;"></i>
-            </a>
-
-            <a href="https://instagram.com" target="_blank" class="text-white mx-2">
-                <i class="bi bi-instagram" style="font-size: 1.5rem;"></i>
-            </a>
-
-            <a href="https://linkedin.com" target="_blank" class="text-white mx-2">
-                <i class="bi bi-linkedin" style="font-size: 1.5rem;"></i>
-            </a>
-
-            <a href="https://github.com" target="_blank" class="text-white mx-2">
-                <i class="bi bi-github" style="font-size: 1.5rem;"></i>
-            </a>
-        </div>
-
         <p class="mb-0 text-secondary">
             APP creada por <strong>Diego Durán Barroso</strong> y <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
-
     </div>
 </footer>
 

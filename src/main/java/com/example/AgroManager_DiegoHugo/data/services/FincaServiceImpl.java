@@ -1,12 +1,18 @@
 package com.example.AgroManager_DiegoHugo.data.services;
 
 import com.example.AgroManager_DiegoHugo.data.model.EstadoFinca;
+import com.example.AgroManager_DiegoHugo.data.model.Fichaje;
 import com.example.AgroManager_DiegoHugo.data.model.Finca;
+import com.example.AgroManager_DiegoHugo.data.repositories.AsignacionRepository;
+import com.example.AgroManager_DiegoHugo.data.repositories.FichajeRepository;
 import com.example.AgroManager_DiegoHugo.data.repositories.FincaRepository;
+import com.example.AgroManager_DiegoHugo.data.repositories.TareaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +21,19 @@ import java.util.Optional;
 public class FincaServiceImpl implements FincaService {
 
     private final FincaRepository fincaRepository;
+    private final AsignacionRepository asignacionRepository;
+    private final TareaRepository tareaRepository;
+    private final FichajeRepository fichajeRepository;
 
     @Autowired
-    public FincaServiceImpl(FincaRepository fincaRepository) {
+    public FincaServiceImpl(FincaRepository fincaRepository,
+                            AsignacionRepository asignacionRepository,
+                            TareaRepository tareaRepository,
+                            FichajeRepository fichajeRepository) {
         this.fincaRepository = fincaRepository;
+        this.asignacionRepository = asignacionRepository;
+        this.tareaRepository = tareaRepository;
+        this.fichajeRepository = fichajeRepository;
     }
 
     @Override
@@ -85,10 +100,29 @@ public class FincaServiceImpl implements FincaService {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID de finca inválido: " + id);
         }
-        if (!fincaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Finca con ID " + id + " no encontrada");
+
+        Finca finca = fincaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Finca con ID " + id + " no encontrada"));
+
+        // 1) Cerrar fichajes abiertos de esa finca y luego borrar todos
+        List<Fichaje> fichajes = fichajeRepository.findByFincaId(id);
+        for (Fichaje f : fichajes) {
+            if (f.getFin() == null) {
+                f.setFin(Instant.now());
+                f.setEstado("CERRADO"); // adapta si usas enum
+                fichajeRepository.save(f);
+            }
         }
-        fincaRepository.deleteById(id);
+        fichajeRepository.deleteByFincaId(id);
+
+        // 2) Borrar tareas de esa finca
+        tareaRepository.deleteByFincaId(id);
+
+        // 3) Borrar asignaciones de esa finca
+        asignacionRepository.deleteByFincaId(id);
+
+        // 4) Borrar la finca
+        fincaRepository.delete(finca);
     }
 
     @Override

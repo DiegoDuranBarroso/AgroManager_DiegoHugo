@@ -32,12 +32,20 @@ public class EmpleadoController {
     }
 
     @GetMapping("/")
-    public String listarEmpleados(@RequestParam(name = "nombre", required = false) String nombre,
+    public String listarEmpleados(@RequestParam(name = "empleadoId", required = false) Long empleadoId,
                                   Model model) {
 
-        if (nombre != null && !nombre.trim().isEmpty()) {
-            model.addAttribute("empleados", empleadoService.buscarPorNombre(nombre.trim()));
-            model.addAttribute("filtroNombre", nombre.trim());
+        if (empleadoId != null) {
+            empleadoService.encontrarPorId(empleadoId).ifPresentOrElse(empleado -> {
+                model.addAttribute("empleados", java.util.Collections.singletonList(empleado));
+            }, () -> {
+                // Si no existe el id, mostramos todos o lista vacía, como prefieras
+                model.addAttribute("empleados", empleadoService.encontrarTodos());
+            });
+
+            // Para marcar la opción seleccionada en el <select>
+            model.addAttribute("empleadoSeleccionado", empleadoId);
+
         } else {
             model.addAttribute("empleados", empleadoService.encontrarTodos());
         }
@@ -52,6 +60,7 @@ public class EmpleadoController {
 
         return "empleados";
     }
+
 
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
