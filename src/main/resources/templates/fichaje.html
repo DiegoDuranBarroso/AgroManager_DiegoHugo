@@ -10,8 +10,60 @@
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+
+        /* Modal de éxito para salida */
+        .modal-success-check .modal-content {
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .modal-success-check .modal-header {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-bottom: none;
+            color: #fff;
+            justify-content: center;
+        }
+
+        .modal-success-check .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-success-check .modal-body {
+            text-align: center;
+            padding: 30px 30px 10px;
+        }
+
+        .modal-success-check .check-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #4caf50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background-color: #e8f5e9;
+        }
+
+        .modal-success-check .check-circle i {
+            font-size: 2.5rem;
+            color: #2e7d32;
+        }
+
+        .modal-success-check .modal-footer {
+            border-top: none;
+            justify-content: center;
+            padding-bottom: 25px;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -43,16 +95,14 @@
             Mis fichajes
         </h2>
 
+        <!-- Botón nuevo fichaje solo si NO es vista gerente -->
         <a class="btn btn-success"
-           th:if="${vistaGerente} == null or !${vistaGerente}"
+           th:if="${vistaGerente == null or !vistaGerente}"
            th:href="@{|/fichajes/nuevo?empleadoId=${empleado.id}|}">
             + Nuevo fichaje de inicio
         </a>
     </div>
 
-    <!-- ===================================================== -->
-    <!--             FILTRO SOLO PARA GERENTE                   -->
-    <!-- ===================================================== -->
     <!-- FILTRO POR EMPLEADO — SOLO GERENTE -->
     <div th:if="${vistaGerente}">
         <form class="row g-2 mb-4" th:action="@{/fichajes/}" method="get">
@@ -75,7 +125,6 @@
             </div>
         </form>
     </div>
-
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
@@ -107,12 +156,14 @@
                     <td th:text="${fic.estado}"></td>
 
                     <td>
-                        <!-- Empleado puede marcar salida -->
-                        <form th:if="(!${vistaGerente}) and ${fic.fin} == null"
+                        <!-- Empleado puede marcar salida si no es vistaGerente y aún no tiene fin -->
+                        <form th:if="${(vistaGerente == null or !vistaGerente) and fic.fin == null}"
                               th:action="@{|/fichajes/fin?empleadoId=${empleado.id}|}"
                               method="post"
                               class="d-inline">
-                            <button class="btn btn-sm btn-primary">Marcar salida</button>
+                            <button class="btn btn-sm btn-primary" type="submit">
+                                Marcar salida
+                            </button>
                         </form>
 
                         <!-- Gerente puede eliminar -->
@@ -139,6 +190,40 @@
 
 </div>
 
+<!-- MODAL SALIDA REGISTRADA (solo si salidaOK == true) -->
+<div class="modal fade modal-success-check"
+     id="modalSalida"
+     tabindex="-1"
+     aria-hidden="true"
+     th:if="${salidaOK}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Salida registrada</h5>
+            </div>
+
+            <div class="modal-body">
+                <div class="check-circle">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                <p class="fs-5 mb-0">
+                    El fichaje se ha cerrado correctamente. ¡Buen trabajo!
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-success px-4"
+                        data-bs-dismiss="modal">
+                    Aceptar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
     <div class="container text-center text-white">
         <p class="mb-2">© 2025 <strong>AgroManager</strong> — Todos los derechos reservados.</p>
@@ -152,18 +237,41 @@
         </p>
 
         <div class="mb-3">
-            <a href="https://facebook.com" target="_blank" class="text-white mx-2"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
-            <a href="https://twitter.com" target="_blank" class="text-white mx-2"><i class="bi bi-twitter-x" style="font-size: 1.5rem;"></i></a>
-            <a href="https://instagram.com" target="_blank" class="text-white mx-2"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
-            <a href="https://linkedin.com" target="_blank" class="text-white mx-2"><i class="bi bi-linkedin" style="font-size: 1.5rem;"></i></a>
-            <a href="https://github.com" target="_blank" class="text-white mx-2"><i class="bi bi-github" style="font-size: 1.5rem;"></i></a>
+            <a href="https://facebook.com" target="_blank" class="text-white mx-2">
+                <i class="bi bi-facebook" style="font-size: 1.5rem;"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" class="text-white mx-2">
+                <i class="bi bi-twitter-x" style="font-size: 1.5rem;"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="text-white mx-2">
+                <i class="bi bi-instagram" style="font-size: 1.5rem;"></i>
+            </a>
+            <a href="https://linkedin.com" target="_blank" class="text-white mx-2">
+                <i class="bi bi-linkedin" style="font-size: 1.5rem;"></i>
+            </a>
+            <a href="https://github.com" target="_blank" class="text-white mx-2">
+                <i class="bi bi-github" style="font-size: 1.5rem;"></i>
+            </a>
         </div>
 
         <p class="mb-0 text-secondary">
-            APP creada por <strong>Diego Durán Barroso</strong> y <strong>Hugo Sánchez de la Roda Rivera</strong>.
+            APP creada por <strong>Diego Durán Barroso</strong> y
+            <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
     </div>
 </footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Mostrar modal automáticamente si salidaOK == true -->
+<script th:if="${salidaOK}">
+    const modalElement = document.getElementById('modalSalida');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+</script>
 
 </body>
 </html>

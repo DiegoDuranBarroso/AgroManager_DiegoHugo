@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 @RequestMapping("/fichajes")
 public class FichajeController {
@@ -25,7 +24,6 @@ public class FichajeController {
     private final EmpleadoService empleadoService;
     private final FincaService fincaService;
 
-    // NUEVOS CAMPOS
     private final UsuarioService usuarioService;
     private final GerenteRepository gerenteRepository;
 
@@ -49,9 +47,13 @@ public class FichajeController {
     @GetMapping("/")
     public String verFichajesEmpleado(
             @RequestParam(name = "empleadoId", required = false) Long empleadoId,
+            @RequestParam(name = "salidaOK", required = false) Boolean salidaOK,
             Model model) {
 
         Usuario usuario = usuarioService.obtenerUsuarioEnSesion().orElse(null);
+
+        // Flag para mostrar el modal de "salida registrada"
+        model.addAttribute("salidaOK", Boolean.TRUE.equals(salidaOK));
 
         // ===== GERENTE sin filtro → ver todos =====
         if (usuario != null && usuario.getRol() == Rol.GERENTE && empleadoId == null) {
@@ -99,7 +101,6 @@ public class FichajeController {
         return "fichaje";
     }
 
-
     // ================= NUEVO FICHAJE (inicio, solo empleado) =================
 
     @GetMapping("/nuevo")
@@ -139,7 +140,8 @@ public class FichajeController {
     @PostMapping("/fin")
     public String registrarFin(@RequestParam Long empleadoId) {
         fichajeService.finalizarFichaje(empleadoId);
-        return "redirect:/fichajes/?empleadoId=" + empleadoId;
+        // añadimos salidaOK=true para que salga el modal
+        return "redirect:/fichajes/?empleadoId=" + empleadoId + "&salidaOK=true";
     }
 
     // ================= ELIMINAR FICHAJE =================
@@ -161,6 +163,5 @@ public class FichajeController {
         }
         return "redirect:/home";
     }
-
 
 }

@@ -6,6 +6,7 @@ body {
 
 .home-wrapper {
     position: relative;
+    /* altura total menos navbar (56px aprox.) y footer (~220px) */
     min-height: calc(100vh - 56px - 220px);
     background-image: url('/img/fondo.jpg');
     background-size: cover;
@@ -30,9 +31,16 @@ body {
 /* ===== GRID TARJETAS ===== */
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr)); /* móvil */
     gap: 24px;
     margin-top: 24px;
+}
+
+/* 2 columnas en pantallas medianas y grandes */
+@media (min-width: 768px) {
+    .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 /* ===== TARJETA ESTILO FOTO ===== */
@@ -40,13 +48,13 @@ body {
     position: relative;
     border-radius: 22px;
     overflow: hidden;
-    height: 260px;
+    height: 320px;                 /* tamaño similar al del gerente */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 
-    cursor: pointer;
     box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -67,21 +75,32 @@ body {
     box-shadow: 0 26px 40px rgba(0, 0, 0, 0.65);
 }
 
+/* Contenido en la parte inferior de la tarjeta */
 .feature-card-content {
     position: absolute;
-    left: 20px;
-    right: 20px;
-    bottom: 18px;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
     color: #ffffff;
 }
 
+/* Línea fina superior */
 .feature-line {
     width: 65px;
     height: 2px;
     background-color: rgba(255, 255, 255, 0.9);
-    margin: 8px 0 10px;
+    margin-bottom: 10px;
 }
 
+/* Caja de texto con fondo oscuro debajo de la línea */
+.feature-text-box {
+    background: rgba(0, 0, 0, 0.60);
+    border-radius: 14px;
+    padding: 10px 14px 12px;
+    backdrop-filter: blur(2px);
+}
+
+/* Títulos / subtítulos */
 .feature-title {
     font-weight: 600;
     font-size: 1.1rem;
@@ -92,6 +111,19 @@ body {
     font-size: 0.9rem;
     opacity: 0.9;
     margin: 0;
+}
+
+/* Botones dentro de la tarjeta */
+.feature-actions {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.feature-actions .btn {
+    font-size: 0.85rem;
+    padding: 4px 12px;
 }
 
 /* ===== LOGOUT ===== */

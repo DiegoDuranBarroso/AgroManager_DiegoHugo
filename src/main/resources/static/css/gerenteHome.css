@@ -1,0 +1,137 @@
+/* ===== FONDO GENERAL ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.home-wrapper {
+    position: relative;
+    min-height: calc(100vh - 56px - 220px); /* navbar + footer aprox. */
+    background-image: url('/img/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.home-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+.home-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px 60px;
+}
+
+/* ===== GRID TARJETAS ===== */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr)); /* móvil */
+    gap: 24px;
+    margin-top: 24px;
+}
+
+/* 2 columnas en tablet */
+@media (min-width: 768px) {
+    .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 3 columnas en escritorio (3 arriba, 3 abajo) */
+@media (min-width: 1200px) {
+    .feature-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Hace que todo el bloque sea clicable */
+.feature-grid a {
+    display: block;
+    text-decoration: none;
+}
+
+/* ===== TARJETA ESTILO FOTO ===== */
+.feature-card {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    height: 320px;                 /* más grande */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.65) 0%,
+            rgba(0, 0, 0, 0.25) 40%,
+            rgba(0, 0, 0, 0.05) 100%
+    );
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 40px rgba(0, 0, 0, 0.65);
+}
+
+/* Contenido en la parte inferior de la tarjeta */
+.feature-card-content {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+    color: #ffffff;
+}
+
+/* Línea fina superior */
+.feature-line {
+    width: 65px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 10px;
+}
+
+/* Caja de texto con fondo oscuro debajo de la línea */
+.feature-text-box {
+    background: rgba(0, 0, 0, 0.60);
+    border-radius: 14px;
+    padding: 10px 14px 12px;
+    backdrop-filter: blur(2px);
+}
+
+/* Títulos / subtítulos */
+.feature-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.feature-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ===== LOGOUT ===== */
+.btn-logout {
+    margin-top: 30px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background-color: #1e1e1e;
+    padding: 25px 0;
+}

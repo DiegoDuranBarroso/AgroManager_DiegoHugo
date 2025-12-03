@@ -30,8 +30,6 @@ class FullApplicationFlowTest {
     FichajeRepository fichajeRepo;
     @Autowired TareaRepository tareaRepo;
     @Autowired ContratoRepository contratoRepo;
-    @Autowired
-    NominaRepository nominaRepo;
 
     @Test
     void flujoCompleto() {
@@ -75,13 +73,11 @@ class FullApplicationFlowTest {
         if (horas == null) horas = BigDecimal.ZERO;
 
         BigDecimal total = c.getSalarioBase().add(c.getTarifaHora().multiply(horas));
-        Nomina n = new Nomina(hoy.withDayOfMonth(1), hoy.withDayOfMonth(1).plusMonths(1).minusDays(1), total, "GENERADA", e);
-        nominaRepo.save(n);
+
 
         // 6) Asserts finales
         assertThat(usuarioRepo.findByUsername("flow_user")).isPresent();
         assertThat(empleadoRepo.findByDni("00000000X")).isPresent();
         assertThat(tareaRepo.findByEmpleadoId(e.getId())).isNotEmpty();
-        assertThat(nominaRepo.findByEmpleadoIdOrderByPeriodoInicioDesc(e.getId())).isNotEmpty();
     }
 }

@@ -128,6 +128,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             return Optional.empty();
         }
 
+        if (!usuario.isActivo()) {
+            return Optional.empty();
+        }
+
         return Optional.of(usuario);
     }
 

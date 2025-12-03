@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,9 +62,7 @@ public class TareaController {
             mostrarFiltro = false;
 
             empleadoService.encontrarPorId(empleadoId).ifPresent(e -> {
-                // si alguna vez quieres usarlo en la vista
                 model.addAttribute("empleado", e);
-                // por si lo quieres reutilizar como "empleadoSesion"
                 model.addAttribute("empleadoSesion", e);
             });
 
@@ -99,10 +98,7 @@ public class TareaController {
         return "tareas";   // templates/tareas.html
     }
 
-
     // ========= NUEVA TAREA =========
-    // GERENTE:  /tareas/nueva
-    // EMPLEADO: /tareas/nueva?empleadoId=X&modo=EMPLEADO
 
     @GetMapping("/nueva")
     public String mostrarFormularioNuevaTarea(
@@ -114,18 +110,16 @@ public class TareaController {
         model.addAttribute("fincas", fincaService.encontrarTodas());
 
         if ("EMPLEADO".equalsIgnoreCase(modo) && empleadoId != null) {
-            // Empleado creando su propia tarea (si lo reactivas algún día)
             Empleado emp = empleadoService.encontrarPorId(empleadoId)
                     .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
             model.addAttribute("empleadoActual", emp);
             model.addAttribute("empleados", null);
         } else {
-            // Gerente: selector de empleados
             model.addAttribute("empleadoActual", null);
             model.addAttribute("empleados", empleadoService.encontrarTodos());
         }
 
-        // --- Usuario en sesión para el navbar ---
+        // Usuario en sesión para navbar
         Optional<Usuario> optUsuario = usuarioService.obtenerUsuarioEnSesion();
         if (optUsuario.isPresent()) {
             Usuario u = optUsuario.get();
@@ -138,10 +132,10 @@ public class TareaController {
             }
         }
 
-        return "tareaForm";   // templates/tareaForm.html
+        return "tareaForm";
     }
 
-    // ========= GUARDAR TAREA (GERENTE + EMPLEADO) =========
+    // ========= GUARDAR TAREA =========
 
     @PostMapping("/")
     public String guardarTarea(@RequestParam Long empleadoId,
@@ -155,7 +149,6 @@ public class TareaController {
         Finca finca = fincaService.encontrarPorId(fincaId)
                 .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
-        // Fecha = hoy (puedes cambiarlo a un campo de formulario si quieres)
         tareaService.registrarTarea(empleado, finca, LocalDate.now(), tipo, horas);
 
         if ("EMPLEADO".equalsIgnoreCase(modo)) {
@@ -172,16 +165,19 @@ public class TareaController {
         return "redirect:/tareas/";
     }
 
+    // ========= MARCAR REALIZADO (EMPLEADO) =========
+
     @PostMapping("/{id}/realizado")
-    public String marcarRealizado(@PathVariable Long id) {
+    public String marcarRealizado(@PathVariable Long id,
+                                  RedirectAttributes redirectAttributes) {
 
         Tarea tarea = tareaService.marcarRealizada(id);
-
         Long empleadoId = tarea.getEmpleado().getId();
+
+        // Flash attribute para mostrar el overlay “guay”
+        redirectAttributes.addFlashAttribute("tareaRealizadaOK", true);
 
         return "redirect:/tareas/?modo=EMPLEADO&empleadoId=" + empleadoId;
     }
-
-
 
 }

@@ -22,8 +22,6 @@ class EliminarEmpleadoTest {
     @Autowired
     TareaRepository tareaRepo;
     @Autowired
-    NominaRepository nominaRepo;
-    @Autowired
     FichajeRepository fichajeRepo;
     @Autowired
     AsignacionRepository asignacionRepo;
@@ -42,7 +40,6 @@ class EliminarEmpleadoTest {
         assertThat(empleadoRepo.findById(empId)).isEmpty();
         assertThat(usuarioRepo.findById(userId)).isEmpty();
         assertThat(tareaRepo.findByEmpleadoId(empId)).isEmpty();
-        assertThat(nominaRepo.findByEmpleadoIdOrderByPeriodoInicioDesc(empId)).isEmpty();
         assertThat(fichajeRepo.findByEmpleadoId(empId)).isEmpty();
         assertThat(asignacionRepo.findByEmpleadoId(empId)).isEmpty();
         assertThat(contratoRepo.findByEmpleadoId(empId, org.springframework.data.domain.Sort.unsorted())).isEmpty();
