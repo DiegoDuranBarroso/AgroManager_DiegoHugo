@@ -108,31 +108,37 @@ Boot** a través de la red interna definida en el archivo `docker-compose.yml`.
 A continuación, se explican los **casos de uso** reflejados en el diagrama del sistema, diferenciando las acciones
 disponibles para **Usuario**, **Gerente** y **Empleado**.
 
-<img src="img/casoUso.png" width="762"/>
+<img src="img/casoUso.png" width="650"/>
 
 # Casos de Uso – AgroManager (según el diagrama)
 
-| Nº | Actor                | Caso de Uso | Descripción breve |
-|----|----------------------|-------------|-------------------|
-| **1** | **Usuario**          | **Registrarse como gerente** | Crea un nuevo usuario con rol GERENTE para acceder por primera vez (incluye iniciar sesión como gerente). |
-| **2** | **Usuario**          | **Iniciar sesión como gerente** | Permite a un gerente autenticarse en el sistema mediante credenciales. |
-| **3** | **Usuario**          | **Iniciar sesión como empleado** | Permite a un empleado entrar en el sistema usando su ID y contraseña. |
-| **4** | **Gerente**          | **Registrar empleado** | Da de alta un nuevo empleado proporcionando su información básica. |
-| **5** | **Gerente**          | **Actualizar datos empleado** | Modifica datos como nombre, DNI, estado o usuario asociado. |
-| **6** | **Gerente**          | **Eliminar empleado** | Elimina al empleado y provoca borrado en cascada de asignaciones, fichajes, tareas, contratos y nóminas asociadas. |
-| **7** | **Gerente**          | **Crear nueva tarea** | Permite crear una tarea que será asignada posteriormente o realizada por un empleado. |
-| **8** | **Gerente/Empleado** | **Ver lista tareas** | Consulta el listado de todas las tareas registradas. |
-| **9** | **Gerente**          | **Eliminar tarea** | Elimina una tarea del sistema. |
-| **10** | **Gerente**          | **Asignar empleado a finca** | Registra una asignación entre un empleado y una finca. |
-| **11** | **Gerente**          | **Eliminar asignación** | Borra una asignación entre empleado y finca. |
-| **12** | **Gerente**          | **Crear nueva finca** | Crea una finca indicando nombre, ubicación, estado y superficie. |
-| **13** | **Gerente**          | **Cambiar estado de finca** | Modifica el estado operativo de la finca (SEMBRADA, BARBECHO, etc.). |
-| **14** | **Gerente**          | **Eliminar finca** | Elimina una finca y borra asignaciones y tareas dependientes. |
-| **15** | **Gerente**          | **Crear contrato de trabajo** | Registra un contrato con tipo, fechas, salario y tarifa por hora. |
-| **16** | **Gerente**          | **Eliminar contrato de trabajo** | Elimina un contrato concreto del sistema. |
-| **17** | **Empleado**         | **Registrar fichaje inicio** | Registra la hora de inicio de la jornada laboral. |
-| **18** | **Empleado**         | **Registrar fichaje fin** | Registra la hora de fin de la jornada laboral. |
-| **19** | **Empleado**         | **Registrar tarea realizada** | Permite al empleado registrar que ha completado una tarea indicando tipo y duración. |
+| **Nº** | **Actor**            | **Caso de uso**                | **Descripción** |
+|--------|----------------------|--------------------------------|------------------|
+| **1**  | **Usuario**          | **Registrarse como gerente**   | Crea un nuevo usuario con rol GERENTE para acceder por primera vez (incluye iniciar sesión como gerente). |
+| **2**  | **Usuario**          | **Iniciar sesión como gerente** | Permite a un gerente autenticarse en el sistema mediante credenciales. |
+| **3**  | **Usuario**          | **Iniciar sesión como empleado** | Permite a un empleado entrar en el sistema usando su ID y contraseña. |
+| **4**  | **Gerente**          | **Registrar empleado**         | Crea un nuevo usuario con rol EMPLEADO asociado a un empleado existente o recién creado. |
+| **5**  | **Gerente**          | **Actualizar datos empleado**  | Modifica datos del empleado como nombre, DNI, estado o usuario asociado. |
+| **6**  | **Gerente**          | **Eliminar empleado**          | Elimina al empleado y borra en cascada asignaciones, fichajes, tareas, contratos y nóminas asociadas. |
+| **7**  | **Gerente**          | **Editar tarea**               | Modifica los datos de una tarea existente. |
+| **8**  | **Gerente**          | **Crear nueva tarea**          | Permite crear una tarea para ser asignada o realizada por un empleado. |
+| **9**  | **Gerente/Empleado** | **Ver lista tareas**           | Consulta el listado de todas las tareas creadas. |
+| **10** | **Gerente**          | **Eliminar tarea**             | Elimina una tarea del sistema. |
+| **11** | **Gerente**          | **Asignar empleado a finca**   | Registra una asignación entre un empleado y una finca. |
+| **12** | **Gerente**          | **Cerrar asignación**          | Finaliza una asignación sin eliminarla, anotando fecha de cierre. |
+| **13** | **Gerente**          | **Eliminar asignación**        | Borra la asignación entre empleado y finca. |
+| **14** | **Gerente**          | **Crear nueva finca**          | Crea una finca indicando nombre, ubicación, estado y superficie. |
+| **15** | **Gerente**          | **Editar finca**               | Modifica los datos de una finca (nombre, ubicación, superficie o estado). |
+| **16** | **Gerente**          | **Eliminar finca**             | Elimina una finca y borra asignaciones y tareas dependientes. |
+| **17** | **Gerente**          | **Crear contrato de trabajo**  | Registra un contrato con tipo, fechas, salario y tarifa por hora. |
+| **18** | **Gerente**          | **Editar contrato de trabajo** | Modifica los datos de un contrato existente. |
+| **19** | **Gerente**          | **Eliminar contrato de trabajo** | Elimina un contrato concreto del sistema. |
+| **20** | **Gerente**          | **Editar fichajes**            | Modifica fichajes de los empleados (horas de inicio/fin). |
+| **21** | **Gerente**          | **Eliminar fichajes**          | Elimina un fichaje concreto del sistema. |
+| **22** | **Empleado**         | **Registrar fichaje inicio**   | Registra la hora de inicio de la jornada laboral. |
+| **23** | **Empleado**         | **Registrar fichaje fin**      | Registra la hora de fin de la jornada laboral y cierra el fichaje. |
+| **24** | **Empleado**         | **Registrar tarea realizada**  | El empleado registra una tarea completada indicando tipo y duración. |
+
                       |
 
 # 4. Diagrama (Entidades) 🧭

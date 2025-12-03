@@ -110,6 +110,7 @@ public class FincaController {
 
     // ================== FORMULARIO EDITAR ==================
     // ================== FORMULARIO EDITAR ==================
+// ================== FORMULARIO EDITAR ==================
     @GetMapping("/{id}/editar")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
 
@@ -132,6 +133,7 @@ public class FincaController {
 
         return "fincaForm"; // templates/fincaForm.html
     }
+
 
 
     // ================== POST EDITAR ==================
@@ -190,4 +192,8 @@ public class FincaController {
         fincaService.eliminarPorId(id); // ya hace el borrado en cascada manual
         return "redirect:/fincas/";
     }
+
+
+
+
 }

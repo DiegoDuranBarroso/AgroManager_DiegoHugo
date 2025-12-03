@@ -125,4 +125,9 @@ public class FichajeServiceImpl implements FichajeService {
         return fichajeRepository.findAll();
     }
 
+    @Override
+    public void guardar(Fichaje fichaje) {
+        fichajeRepository.save(fichaje);
+    }
+
 }

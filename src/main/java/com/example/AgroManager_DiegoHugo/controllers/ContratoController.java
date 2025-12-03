@@ -111,4 +111,55 @@ public class ContratoController {
         contratoService.eliminarPorId(id);
         return "redirect:/contratos/";
     }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEditarContrato(@PathVariable Long id, Model model) {
+        Contrato contrato = contratoService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Contrato no encontrado"));
+
+        model.addAttribute("contrato", contrato);
+        model.addAttribute("empleados", empleadoService.encontrarActivos());
+        model.addAttribute("tiposContrato", Arrays.asList(TipoContrato.values()));
+
+        // gerente para el navbar
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(u -> {
+            if (u.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(u.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
+
+        return "contratoEditar";   // la plantilla de arriba
+    }
+
+    @PostMapping("/{id}/actualizar")
+    public String actualizarContrato(@PathVariable Long id,
+                                     @RequestParam Long empleadoId,
+                                     @RequestParam TipoContrato tipo,
+                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+                                     @RequestParam(required = false)
+                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+                                     @RequestParam BigDecimal salarioBase,
+                                     @RequestParam BigDecimal tarifaHora) {
+
+        Contrato contrato = contratoService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Contrato no encontrado"));
+
+        Empleado empleado = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        contrato.setEmpleado(empleado);
+        contrato.setTipo(tipo);
+        contrato.setFechaInicio(fechaInicio);
+        contrato.setFechaFin(fechaFin);
+        contrato.setSalarioBase(salarioBase);
+        contrato.setTarifaHora(tarifaHora);
+
+        contratoService.guardar(contrato);
+
+        return "redirect:/contratos/";
+    }
+
+
+
 }

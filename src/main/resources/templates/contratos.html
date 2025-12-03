@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Contratos</title>
-
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
     <link rel="stylesheet" th:href="@{/css/fondos2.css}">
@@ -16,18 +15,19 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
-
 <body>
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
+        <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
+        <!-- Nombre del gerente logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${gerente.nombre}">
             👤 Nombre gerente
@@ -41,7 +41,7 @@
     <div class="home-content container">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="fw-bold">Contratos</h2>
+            <h2 class="fw-bold text-dark">Contratos</h2>
             <a th:href="@{/contratos/nuevo}" class="btn btn-success">
                 + Nuevo Contrato
             </a>
@@ -50,9 +50,9 @@
         <!-- FILTRO POR EMPLEADO -->
         <form class="row g-2 mb-4" th:action="@{/contratos/}" method="get">
             <div class="col-md-4">
-                <label class="form-label">Empleado</label>
+                <label class="form-label text-dark">Empleado</label>
                 <select class="form-select" name="empleadoId">
-                    <option value="">-- Todos --</option>
+                    <option value="" th:text="'-- Todos --'"></option>
                     <option th:each="emp : ${empleados}"
                             th:value="${emp.id}"
                             th:selected="${empleadoSeleccionado != null and empleadoSeleccionado == emp.id}"
@@ -60,7 +60,6 @@
                     </option>
                 </select>
             </div>
-
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
                 <a th:href="@{/contratos/}" class="btn btn-outline-secondary">Limpiar</a>
@@ -83,7 +82,6 @@
                         <th>Acciones</th>
                     </tr>
                     </thead>
-
                     <tbody>
                     <tr th:each="contrato : ${contratos}">
                         <td th:text="${contrato.id}"></td>
@@ -91,10 +89,16 @@
                         <td th:text="${contrato.tipo}"></td>
                         <td th:text="${contrato.fechaInicio}"></td>
                         <td th:text="${contrato.fechaFin != null ? contrato.fechaFin : 'Indefinido'}"></td>
-                        <td th:text="${#numbers.formatDecimal(contrato.salarioBase,1,'COMMA',2,'POINT')}"></td>
-                        <td th:text="${#numbers.formatDecimal(contrato.tarifaHora,1,'COMMA',2,'POINT')}"></td>
-
+                        <td th:text="${#numbers.formatDecimal(contrato.salarioBase, 1, 'COMMA', 2, 'POINT')}"></td>
+                        <td th:text="${#numbers.formatDecimal(contrato.tarifaHora, 1, 'COMMA', 2, 'POINT')}"></td>
                         <td>
+                            <!-- NUEVA ACCIÓN: EDITAR CONTRATO -->
+                            <a class="btn btn-sm btn-primary me-1"
+                               th:href="@{|/contratos/${contrato.id}/editar|}">
+                                Editar
+                            </a>
+
+                            <!-- Eliminar -->
                             <form th:action="@{|/contratos/${contrato.id}/eliminar|}"
                                   method="post" class="d-inline">
                                 <button class="btn btn-sm btn-danger"
@@ -105,7 +109,6 @@
                         </td>
                     </tr>
                     </tbody>
-
                 </table>
             </div>
         </div>
@@ -123,6 +126,7 @@
         <p class="mb-2">
             © 2025 <strong>AgroManager</strong> — Todos los derechos reservados.
         </p>
+
         <p class="mb-3">
             Contacto:
             <a href="mailto:contacto@agromanager.com"
@@ -154,8 +158,7 @@
         </div>
 
         <p class="mb-0 text-secondary">
-            APP creada por <strong>Diego Durán Barroso</strong> y
-            <strong>Hugo Sánchez de la Roda Rivera</strong>.
+            APP creada por <strong>Diego Durán Barroso</strong> y <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
 
     </div>

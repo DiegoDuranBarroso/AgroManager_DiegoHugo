@@ -30,5 +30,6 @@ public interface FichajeService {
 
     // NUEVO
     List<Fichaje> encontrarTodos();
+    void guardar(Fichaje fichaje);
 
 }

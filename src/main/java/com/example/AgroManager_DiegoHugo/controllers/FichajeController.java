@@ -16,6 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @Controller
 @RequestMapping("/fichajes")
 public class FichajeController {
@@ -163,5 +168,75 @@ public class FichajeController {
         }
         return "redirect:/home";
     }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEditarFichaje(@PathVariable Long id, Model model) {
+
+        Fichaje fichaje = fichajeService.fichajePorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Fichaje no encontrado"));
+
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
+                .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
+
+        if (usuario.getRol() != Rol.GERENTE) {
+            return "redirect:/home";
+        }
+
+        Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new IllegalStateException("Gerente no encontrado"));
+
+        model.addAttribute("fichaje", fichaje);
+        model.addAttribute("empleados", empleadoService.encontrarActivos());
+        model.addAttribute("fincas", fincaService.encontrarTodas());
+        model.addAttribute("gerente", gerente);
+
+        return "fichajeEditar";
+    }
+    
+
+    @PostMapping("/{id}/editar")
+    public String actualizarFichaje(@PathVariable Long id,
+                                    @RequestParam Long empleadoId,
+                                    @RequestParam Long fincaId,
+                                    @RequestParam String inicio,
+                                    @RequestParam(required = false) String fin,
+                                    @RequestParam String estado) {
+
+        Fichaje fichaje = fichajeService.fichajePorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Fichaje no encontrado"));
+
+        Empleado empleado = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        Finca finca = fincaService.encontrarPorId(fincaId)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
+
+        fichaje.setEmpleado(empleado);
+        fichaje.setFinca(finca);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        ZoneId zoneId = ZoneId.systemDefault();
+
+        // Parsear inicio
+        LocalDateTime inicioLdt = LocalDateTime.parse(inicio, formatter);
+        fichaje.setInicio(inicioLdt.atZone(zoneId).toInstant());
+
+        // Parsear fin si viene
+        if (fin != null && !fin.isBlank()) {
+            LocalDateTime finLdt = LocalDateTime.parse(fin, formatter);
+            fichaje.setFin(finLdt.atZone(zoneId).toInstant());
+        } else {
+            fichaje.setFin(null);
+        }
+
+        fichaje.setEstado(estado);
+
+        fichajeService.guardar(fichaje);
+
+        return "redirect:/fichajes/";
+    }
+
+
+
 
 }

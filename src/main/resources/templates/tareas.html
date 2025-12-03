@@ -153,7 +153,7 @@
                         <td th:text="${t.horas}"></td>
                         <td>
 
-                            <!-- Botón REALIZADO solo para EMPLEADO y solo si la tarea NO está realizada -->
+                            <!-- Botón REALIZADO solo para EMPLEADO y tarea no realizada -->
                             <form th:if="${modo == 'EMPLEADO' and !t.realizada}"
                                   th:action="@{|/tareas/${t.id}/realizado|}"
                                   method="post"
@@ -162,6 +162,13 @@
                                     ✔ Realizado
                                 </button>
                             </form>
+
+                            <!-- Botón EDITAR solo para GERENTE -->
+                            <a th:if="${modo == null or modo != 'EMPLEADO'}"
+                               class="btn btn-sm btn-warning me-1"
+                               th:href="@{|/tareas/${t.id}/editar|}">
+                                Editar
+                            </a>
 
                             <!-- Botón ELIMINAR solo para GERENTE -->
                             <form th:if="${modo == null or modo != 'EMPLEADO'}"
@@ -173,7 +180,9 @@
                                     Eliminar
                                 </button>
                             </form>
+
                         </td>
+
                     </tr>
                     </tbody>
                 </table>

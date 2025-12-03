@@ -160,8 +160,9 @@
 
                         <td th:text="${fic.estado}"></td>
 
+                        <!-- 🔽 BLOQUE DE ACCIONES ACTUALIZADO -->
                         <td>
-                            <!-- Empleado puede marcar salida si no es vistaGerente y aún no tiene fin -->
+                            <!-- Empleado puede marcar salida -->
                             <form th:if="${(vistaGerente == null or !vistaGerente) and fic.fin == null}"
                                   th:action="@{|/fichajes/fin?empleadoId=${empleado.id}|}"
                                   method="post"
@@ -170,6 +171,13 @@
                                     Marcar salida
                                 </button>
                             </form>
+
+                            <!-- Gerente puede editar -->
+                            <a th:if="${vistaGerente}"
+                               class="btn btn-sm btn-warning me-1"
+                               th:href="@{|/fichajes/${fic.id}/editar|}">
+                                Editar
+                            </a>
 
                             <!-- Gerente puede eliminar -->
                             <form th:if="${vistaGerente}"
@@ -181,8 +189,9 @@
                                     Eliminar
                                 </button>
                             </form>
-
                         </td>
+                        <!-- 🔼 FIN BLOQUE ACCIONES -->
+
                     </tr>
                     </tbody>
                 </table>

@@ -1,10 +1,6 @@
 package com.example.AgroManager_DiegoHugo.controllers;
 
-import com.example.AgroManager_DiegoHugo.data.model.Empleado;
-import com.example.AgroManager_DiegoHugo.data.model.Finca;
-import com.example.AgroManager_DiegoHugo.data.model.Rol;
-import com.example.AgroManager_DiegoHugo.data.model.Tarea;
-import com.example.AgroManager_DiegoHugo.data.model.Usuario;
+import com.example.AgroManager_DiegoHugo.data.model.*;
 import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
 import com.example.AgroManager_DiegoHugo.data.services.FincaService;
@@ -178,6 +174,68 @@ public class TareaController {
         redirectAttributes.addFlashAttribute("tareaRealizadaOK", true);
 
         return "redirect:/tareas/?modo=EMPLEADO&empleadoId=" + empleadoId;
+    }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEditarTarea(@PathVariable Long id, Model model) {
+
+        // Usuario en sesión
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
+                .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
+
+        // Solo GERENTE puede editar
+        if (usuario.getRol() != Rol.GERENTE) {
+            return "redirect:/home";
+        }
+
+        Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new IllegalStateException("Gerente no encontrado"));
+
+        Tarea tarea = tareaService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada"));
+
+        model.addAttribute("tarea", tarea);
+        model.addAttribute("gerente", gerente);
+        model.addAttribute("empleados", empleadoService.encontrarActivos());
+        model.addAttribute("fincas", fincaService.encontrarTodas());
+
+        return "tareaEditar"; // templates/tareaEditar.html
+    }
+
+    @PostMapping("/{id}")
+    public String actualizarTarea(
+            @PathVariable Long id,
+            @RequestParam Long empleadoId,
+            @RequestParam Long fincaId,
+            @RequestParam String fecha,
+            @RequestParam String tipo,
+            @RequestParam BigDecimal horas
+    ) {
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
+                .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
+
+        if (usuario.getRol() != Rol.GERENTE) {
+            return "redirect:/home";
+        }
+
+        Tarea tarea = tareaService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada"));
+
+        Empleado empleado = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        Finca finca = fincaService.encontrarPorId(fincaId)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
+
+        tarea.setEmpleado(empleado);
+        tarea.setFinca(finca);
+        tarea.setFecha(LocalDate.parse(fecha));
+        tarea.setTipo(tipo.trim());
+        tarea.setHoras(horas);
+
+        tareaService.guardar(tarea);
+
+        return "redirect:/tareas/";
     }
 
 }

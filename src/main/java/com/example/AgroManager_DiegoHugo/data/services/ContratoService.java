@@ -29,4 +29,6 @@ public interface ContratoService {
                            BigDecimal tarifaHora);
 
     void eliminarPorId(Long id);
+
+    void guardar(Contrato contrato);
 }

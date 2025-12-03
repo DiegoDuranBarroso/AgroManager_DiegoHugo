@@ -31,5 +31,5 @@ public interface TareaService {
 
     Tarea marcarRealizada(Long tareaId);
 
-
+    Tarea guardar(Tarea tarea);
 }

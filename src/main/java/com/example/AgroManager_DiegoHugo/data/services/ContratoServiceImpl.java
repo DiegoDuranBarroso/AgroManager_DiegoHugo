@@ -111,4 +111,26 @@ public class ContratoServiceImpl implements ContratoService {
         }
         contratoRepository.deleteById(id);
     }
+
+    @Override
+    public void guardar(Contrato contrato) {
+        if (contrato == null) {
+            throw new IllegalArgumentException("El contrato no puede ser nulo");
+        }
+        if (contrato.getEmpleado() == null || contrato.getEmpleado().getId() == null) {
+            throw new IllegalArgumentException("El contrato debe tener un empleado con id");
+        }
+        if (contrato.getTipo() == null) {
+            throw new IllegalArgumentException("El contrato debe tener un tipo");
+        }
+        if (contrato.getFechaInicio() == null) {
+            throw new IllegalArgumentException("El contrato debe tener una fecha de inicio");
+        }
+        if (contrato.getFechaFin() != null && contrato.getFechaFin().isBefore(contrato.getFechaInicio())) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
+        }
+
+        // Persistir (crea o actualiza)
+        contratoRepository.save(contrato);
+    }
 }

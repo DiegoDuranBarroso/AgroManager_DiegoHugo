@@ -34,6 +34,7 @@ public class TareaServiceImpl implements TareaService {
      * Método de conveniencia para el controlador.
      * Equivalente a {@link #encontrarTodas()}.
      */
+    @Override
     @Transactional(readOnly = true)
     public List<Tarea> todasLasTareas() {
         return tareaRepository.findAll();
@@ -136,5 +137,34 @@ public class TareaServiceImpl implements TareaService {
         return tareaRepository.save(tarea);
     }
 
+    // === NUEVO: GUARDAR TAREA (CREAR / EDITAR) ===
+    @Override
+    public Tarea guardar(Tarea tarea) {
+        if (tarea == null) {
+            throw new IllegalArgumentException("La tarea no puede ser nula");
+        }
 
+        if (tarea.getEmpleado() == null || tarea.getEmpleado().getId() == null) {
+            throw new IllegalArgumentException("Empleado inválido en la tarea");
+        }
+
+        if (tarea.getFinca() == null || tarea.getFinca().getId() == null) {
+            throw new IllegalArgumentException("Finca inválida en la tarea");
+        }
+
+        if (tarea.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha de la tarea es obligatoria");
+        }
+
+        if (tarea.getTipo() == null || tarea.getTipo().trim().isEmpty()) {
+            throw new IllegalArgumentException("El tipo de tarea es obligatorio");
+        }
+
+        if (tarea.getHoras() == null || tarea.getHoras().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Las horas deben ser mayores que cero");
+        }
+
+        // Si supera las validaciones, se guarda (crea o actualiza según si tiene id)
+        return tareaRepository.save(tarea);
+    }
 }
