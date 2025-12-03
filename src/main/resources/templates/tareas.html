@@ -23,7 +23,7 @@
             <!-- Logo -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
 
-            <!-- Texto de la marca como antes -->
+            <!-- Texto de la marca -->
             <span class="brand-text"
                   th:text="${modo == 'EMPLEADO'} ?
                            'AGROMANAGER - 🦺 Empleado' :
@@ -48,8 +48,6 @@
 
     </div>
 </nav>
-
-
 
 <div class="container mt-4">
 
@@ -109,7 +107,17 @@
                     <td th:text="${t.tipo}"></td>
                     <td th:text="${t.horas}"></td>
                     <td>
-                        <!-- Botón eliminar SOLO para GERENTE -->
+                        <!-- Botón REALIZADO solo para EMPLEADO y solo si la tarea NO está realizada -->
+                        <form th:if="${modo == 'EMPLEADO'} and !${t.realizada}"
+                              th:action="@{|/tareas/${t.id}/realizado|}"
+                              method="post"
+                              class="d-inline">
+                            <button class="btn btn-sm btn-success">
+                                ✔ Realizado
+                            </button>
+                        </form>
+
+                        <!-- Botón ELIMINAR solo para GERENTE -->
                         <form th:if="${modo == null or modo != 'EMPLEADO'}"
                               th:action="@{|/tareas/${t.id}/eliminar?modo=${modo}&empleadoId=${empleadoSeleccionado}|}"
                               method="post"

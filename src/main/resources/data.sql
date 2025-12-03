@@ -32,10 +32,11 @@ INSERT IGNORE INTO empleado (id, dni, nombre, activo, usuario_id) VALUES
 --------------------------------
 -- FINCAS
 --------------------------------
-INSERT IGNORE INTO finca (id, nombre, estado, gerente_id) VALUES
-(1, 'Finca El Olivar',    'SEMBRADA',      1),
-(2, 'Finca Los Naranjos', 'MANTENIMIENTO', 1),
-(3, 'Finca La Viña',      'LISTA_COSECHA', 1);
+INSERT IGNORE INTO finca (id, nombre, estado, ciudad, provincia, area, gerente_id) VALUES
+(1, 'Finca El Olivar',    'SEMBRADA',      'Mérida',    'Badajoz',  12.50, 1),
+(2, 'Finca Los Naranjos', 'MANTENIMIENTO', 'Don Benito','Badajoz',  8.75,  1),
+(3, 'Finca La Viña',      'LISTA_COSECHA', 'Cáceres',   'Cáceres',  15.20, 1);
+
 
 --------------------------------
 -- CONTRATOS
@@ -61,13 +62,13 @@ INSERT IGNORE INTO asignacion (
 -- TAREAS
 --------------------------------
 INSERT IGNORE INTO tarea (
-    id, fecha, tipo, horas, empleado_id, finca_id
+    id, fecha, tipo, horas, empleado_id, finca_id, realizada
 ) VALUES
-(1, '2024-05-01', 'Riego',       4.00, 1, 1),
-(2, '2024-05-02', 'Poda',        3.50, 1, 1),
-(3, '2024-05-03', 'Cosecha',     6.00, 2, 2),
-(4, '2024-05-04', 'Fertilizado', 5.00, 3, 3),
-(5, '2024-05-05', 'Riego',       2.50, 2, 2);
+(1, '2024-05-01', 'Riego',        4.00, 1, 1, 0),
+(2, '2024-05-02', 'Poda',         3.50, 1, 1, 0),
+(3, '2024-05-03', 'Cosecha',      6.00, 2, 2, 0),
+(4, '2024-05-04', 'Fertilizado',  5.00, 3, 3, 0),
+(5, '2024-05-05', 'Riego',        2.50, 2, 2, 0);
 
 --------------------------------
 -- FICHAJES
@@ -80,12 +81,3 @@ INSERT IGNORE INTO fichaje (
 (3, '2024-05-02 08:30:00', '2024-05-02 13:00:00', 'CERRADO', 2, 2),
 (4, '2024-05-03 09:00:00', NULL,                  'ABIERTO', 3, 3);
 
---------------------------------
--- NÓMINAS
---------------------------------
-INSERT IGNORE INTO nomina (
-    id, periodo_inicio, periodo_fin, total_bruto, estado, empleado_id
-) VALUES
-(1, '2024-04-01', '2024-04-30', 1600.00, 'CONFIRMADA', 1),
-(2, '2024-04-01', '2024-04-30', 1400.00, 'CONFIRMADA', 2),
-(3, '2024-04-01', '2024-04-30', 1300.00, 'BORRADOR',   3);

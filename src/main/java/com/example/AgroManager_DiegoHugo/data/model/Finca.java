@@ -1,7 +1,6 @@
 package com.example.AgroManager_DiegoHugo.data.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
@@ -17,6 +16,14 @@ public class Finca {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoFinca estado;
+
+    @Column(length = 100)
+    private String ciudad;
+
+    @Column(length = 100)
+    private String provincia;
+
+    private Double area;
 
     @ManyToOne(optional = false)
     private Gerente gerente;
@@ -38,6 +45,8 @@ public class Finca {
         this.estado = estado;
         this.gerente = gerente;
     }
+
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -61,6 +70,30 @@ public class Finca {
 
     public void setEstado(EstadoFinca estado) {
         this.estado = estado;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    public Double getArea() {
+        return area;
+    }
+
+    public void setArea(Double area) {
+        this.area = area;
     }
 
     public Gerente getGerente() {

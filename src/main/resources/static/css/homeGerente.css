@@ -1,0 +1,106 @@
+/* ===== FONDO GENERAL ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.home-wrapper {
+    position: relative;
+    min-height: calc(100vh - 56px - 220px);
+    background-image: url('/img/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.home-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+.home-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px 60px;
+}
+
+/* ===== GRID TARJETAS ===== */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+/* ===== TARJETA ESTILO FOTO ===== */
+.feature-card {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    height: 260px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.65) 0%,
+            rgba(0, 0, 0, 0.25) 40%,
+            rgba(0, 0, 0, 0.05) 100%
+    );
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 40px rgba(0, 0, 0, 0.65);
+}
+
+.feature-card-content {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 18px;
+    color: #ffffff;
+}
+
+.feature-line {
+    width: 65px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 8px 0 10px;
+}
+
+.feature-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.feature-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ===== LOGOUT ===== */
+.btn-logout {
+    margin-top: 30px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background-color: #1e1e1e;
+    padding: 25px 0;
+}

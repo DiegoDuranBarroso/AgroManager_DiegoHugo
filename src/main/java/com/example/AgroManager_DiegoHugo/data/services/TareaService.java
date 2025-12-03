@@ -29,4 +29,7 @@ public interface TareaService {
 
     List<Tarea> todasLasTareas();
 
+    Tarea marcarRealizada(Long tareaId);
+
+
 }

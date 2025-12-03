@@ -32,9 +32,6 @@ public class Empleado {
     private List<Tarea> tareas;
 
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Nomina> nominas;
-
-    @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Asignacion> asignaciones;
 
     public Empleado() {}
@@ -70,9 +67,7 @@ public class Empleado {
 
     public List<Tarea> getTareas() { return tareas; }
     public void setTareas(List<Tarea> tareas) { this.tareas = tareas; }
-
-    public List<Nomina> getNominas() { return nominas; }
-    public void setNominas(List<Nomina> nominas) { this.nominas = nominas; }
+    
 
     public List<Asignacion> getAsignaciones() { return asignaciones; }
     public void setAsignaciones(List<Asignacion> asignaciones) { this.asignaciones = asignaciones; }

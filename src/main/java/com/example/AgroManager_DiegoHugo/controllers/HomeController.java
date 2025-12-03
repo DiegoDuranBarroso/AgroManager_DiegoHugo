@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -31,61 +32,64 @@ public class HomeController {
         this.gerenteRepository = gerenteRepository;
     }
 
-    // ---- PÁGINA PRINCIPAL (menú con botones) ----
+    // ---- PÁGINA PRINCIPAL (home con el hero) ----
     @GetMapping("/")
     public String mostrarHome() {
         return "home";
     }
 
-    @GetMapping("/index")
-    public String menuInicial() {
-        return "index";
-    }
-
-    // ---- LOGIN ÚNICO (Gerente / Empleado en un select) ----
-    @GetMapping("/login")
+    // ---- LOGIN (AHORA USA index.html) ----
+    // Tanto /login como /index mostrarán el mismo formulario (index.html)
+    @GetMapping({"/login", "/index"})
     public String mostrarLogin(Model model) {
-        if (!model.containsAttribute("error")) {
-            model.addAttribute("error", null);
-        }
-        // rol por defecto GERENTE (para que aparezca seleccionado)
+
+        // Si no hay rolSeleccionado (primera vez), ponemos GERENTE por defecto
         if (!model.containsAttribute("rolSeleccionado")) {
             model.addAttribute("rolSeleccionado", "GERENTE");
         }
-        return "login";
+
+        // 'error' puede venir como flashAttribute. Si no viene, no hace falta tocarlo.
+        return "index";  // <-- el archivo se llama index.html
     }
 
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String username,
                                 @RequestParam String password,
                                 @RequestParam String rol,
-                                Model model,
-                                HttpSession session) {
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
 
         username = (username == null) ? null : username.trim();
         password = (password == null) ? null : password.trim();
 
         Optional<Usuario> optUsuario = usuarioService.validarLogin(username, password);
 
+        // Usuario no encontrado o inactivo
         if (optUsuario.isEmpty() || !optUsuario.get().isActivo()) {
-            model.addAttribute("error", "Usuario o contraseña incorrectos, o usuario inactivo.");
-            model.addAttribute("rolSeleccionado", rol);
-            return "login";
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Usuario o contraseña incorrectos, o usuario inactivo."
+            );
+            redirectAttributes.addFlashAttribute("rolSeleccionado", rol);
+            return "redirect:/login";   // redirige al GET que renderiza index.html
         }
 
         Usuario usuario = optUsuario.get();
 
-        // Comprobar que el rol del login coincide con el rol guardado
+        // Rol del formulario no coincide con el rol guardado
         if (!usuario.getRol().name().equalsIgnoreCase(rol)) {
-            model.addAttribute("error", "Estás intentando iniciar sesión en un rol que no te corresponde.");
-            model.addAttribute("rolSeleccionado", rol);
-            return "login";
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Estás intentando iniciar sesión en un rol que no te corresponde."
+            );
+            redirectAttributes.addFlashAttribute("rolSeleccionado", rol);
+            return "redirect:/login";
         }
 
         // Guardar el usuario en sesión
         session.setAttribute("usuarioId", usuario.getId());
 
-        // Redirigimos a /home, que decide según el rol
+        // Redirigimos a /home, que decide la vista según el rol
         return "redirect:/home";
     }
 
@@ -108,14 +112,14 @@ public class HomeController {
                                    @RequestParam(required = false) String telefono,
                                    @RequestParam String username,
                                    @RequestParam String password,
-                                   Model model) {
+                                   RedirectAttributes redirectAttributes) {
 
         username = username.trim();
 
         if (usuarioService.encontrarPorUsername(username).isPresent()) {
-            model.addAttribute("error", "El nombre de usuario ya está en uso.");
-            model.addAttribute("success", false);
-            return "registroGerente";
+            redirectAttributes.addFlashAttribute("error", "El nombre de usuario ya está en uso.");
+            redirectAttributes.addFlashAttribute("success", false);
+            return "redirect:/registro/gerente";
         }
 
         if (telefono != null && telefono.isBlank()) {
@@ -124,7 +128,7 @@ public class HomeController {
 
         Usuario usuario = new Usuario();
         usuario.setUsername(username);
-        usuario.setPasswordHash("{noop}" + password); // solo para prototipo
+        usuario.setPasswordHash("{noop}" + password);
         usuario.setRol(Rol.GERENTE);
         usuario.setActivo(true);
 
@@ -138,11 +142,11 @@ public class HomeController {
 
         gerenteRepository.save(gerente);
 
-        model.addAttribute("success", true);
-        model.addAttribute("error", null);
-
-        return "registroGerente";
+        // Mensaje de éxito + redirección al index
+        redirectAttributes.addFlashAttribute("registroOK", true);
+        return "redirect:/index";
     }
+
 
     // ---- HOME SEGÚN ROL ----
     @GetMapping("/home")
@@ -172,7 +176,8 @@ public class HomeController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/index";
+        // Después del logout, lo lógico es volver al login → index.html
+        return "redirect:/login";
     }
 
 }

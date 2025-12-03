@@ -118,4 +118,11 @@ public class FichajeServiceImpl implements FichajeService {
         }
         fichajeRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Fichaje> encontrarTodos() {
+        return fichajeRepository.findAll();
+    }
+
 }

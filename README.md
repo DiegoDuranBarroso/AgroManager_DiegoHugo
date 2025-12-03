@@ -106,30 +106,34 @@ Boot** a través de la red interna definida en el archivo `docker-compose.yml`.
 # 3. Casos de Uso 🧠
 
 A continuación, se explican los **casos de uso** reflejados en el diagrama del sistema, diferenciando las acciones
-disponibles para **Gerente** y **Empleado**.
+disponibles para **Usuario**, **Gerente** y **Empleado**.
 
 <img src="img/casoUso.png" width="762"/>
 
-| Nº     | Actor        | Caso de Uso                      | Descripción breve                                                                           |
-|--------|--------------|----------------------------------|---------------------------------------------------------------------------------------------|
-| **1**  | **Usuario**  | **Registrarse como gerente**     | Permite crear un usuario con rol GERENTE para acceder por primera vez al sistema.           |
-| **2**  | **Usuario**  | **Iniciar sesión como gerente**  | Permite que un gerente acceda al sistema usando sus credenciales.                           |
-| **3**  | **Usuario**  | **Iniciar sesión como empleado** | Permite que un empleado acceda al sistema usando su ID y contraseña.                        |
-| **4**  | **Gerente**  | **Registrar empleado**           | Da de alta a un nuevo trabajador introduciendo su información básica.                       |
-| **5**  | **Gerente**  | **Actualizar datos de empleado** | Modifica nombre, DNI, estado activo o usuario asociado.                                     |
-| **6**  | **Gerente**  | **Eliminar empleado**            | Elimina al empleado y borra en cascada asignaciones, fichajes, tareas, contratos y nóminas. |
-| **7**  | **Gerente**  | **Asignar empleado a finca**     | Asocia un empleado a una finca con fecha de inicio y fin opcional.                          |
-| **8**  | **Gerente**  | **Crear nueva finca**            | Permite crear una finca indicando nombre, ubicación, estado inicial y superficie.           |
-| **9**  | **Gerente**  | **Eliminar finca**               | Elimina una finca y sus elementos asociados (asignaciones y tareas dependientes).           |
-| **10** | **Gerente**  | **Cambiar estado de finca**      | Modifica el estado operativo de una finca (SEMBRADA, MANTENIMIENTO, BARBECHO…).             |
-| **11** | **Gerente**  | **Crear contrato de trabajo**    | Registra un contrato con tipo, fechas, salario y tarifa por hora.                           |
-| **12** | **Gerente**  | **Eliminar contrato de trabajo** | Elimina un contrato específico y sus dependencias asociadas.                                |
-| **13** | **Gerente**  | **Generar nómina mensual**       | Calcula automáticamente la nómina según contrato y tareas realizadas.                       |
-| **14** | **Gerente**  | **Crear nuevas tareas**          | Permite generar tareas directamente desde la gestión del sistema.                           |
-| **15** | **Gerente**  | **Eliminar tareas**              | Elimina tareas previamente registradas en el sistema.                                       |
-| **16** | **Empleado** | **Registrar fichaje de inicio**  | Registra el inicio de la jornada laboral del empleado.                                      |
-| **17** | **Empleado** | **Registrar fichaje de fin**     | Marca el final de la jornada laboral.                                                       |
-| **18** | **Empleado** | **Registrar tarea realizada**    | Permite introducir una tarea realizada indicando tipo y duración.                           |
+# Casos de Uso – AgroManager (según el diagrama)
+
+| Nº | Actor                | Caso de Uso | Descripción breve |
+|----|----------------------|-------------|-------------------|
+| **1** | **Usuario**          | **Registrarse como gerente** | Crea un nuevo usuario con rol GERENTE para acceder por primera vez (incluye iniciar sesión como gerente). |
+| **2** | **Usuario**          | **Iniciar sesión como gerente** | Permite a un gerente autenticarse en el sistema mediante credenciales. |
+| **3** | **Usuario**          | **Iniciar sesión como empleado** | Permite a un empleado entrar en el sistema usando su ID y contraseña. |
+| **4** | **Gerente**          | **Registrar empleado** | Da de alta un nuevo empleado proporcionando su información básica. |
+| **5** | **Gerente**          | **Actualizar datos empleado** | Modifica datos como nombre, DNI, estado o usuario asociado. |
+| **6** | **Gerente**          | **Eliminar empleado** | Elimina al empleado y provoca borrado en cascada de asignaciones, fichajes, tareas, contratos y nóminas asociadas. |
+| **7** | **Gerente**          | **Crear nueva tarea** | Permite crear una tarea que será asignada posteriormente o realizada por un empleado. |
+| **8** | **Gerente/Empleado** | **Ver lista tareas** | Consulta el listado de todas las tareas registradas. |
+| **9** | **Gerente**          | **Eliminar tarea** | Elimina una tarea del sistema. |
+| **10** | **Gerente**          | **Asignar empleado a finca** | Registra una asignación entre un empleado y una finca. |
+| **11** | **Gerente**          | **Eliminar asignación** | Borra una asignación entre empleado y finca. |
+| **12** | **Gerente**          | **Crear nueva finca** | Crea una finca indicando nombre, ubicación, estado y superficie. |
+| **13** | **Gerente**          | **Cambiar estado de finca** | Modifica el estado operativo de la finca (SEMBRADA, BARBECHO, etc.). |
+| **14** | **Gerente**          | **Eliminar finca** | Elimina una finca y borra asignaciones y tareas dependientes. |
+| **15** | **Gerente**          | **Crear contrato de trabajo** | Registra un contrato con tipo, fechas, salario y tarifa por hora. |
+| **16** | **Gerente**          | **Eliminar contrato de trabajo** | Elimina un contrato concreto del sistema. |
+| **17** | **Empleado**         | **Registrar fichaje inicio** | Registra la hora de inicio de la jornada laboral. |
+| **18** | **Empleado**         | **Registrar fichaje fin** | Registra la hora de fin de la jornada laboral. |
+| **19** | **Empleado**         | **Registrar tarea realizada** | Permite al empleado registrar que ha completado una tarea indicando tipo y duración. |
+                      |
 
 # 4. Diagrama (Entidades) 🧭
 

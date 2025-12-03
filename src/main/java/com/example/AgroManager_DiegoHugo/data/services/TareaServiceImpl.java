@@ -124,4 +124,17 @@ public class TareaServiceImpl implements TareaService {
         }
         tareaRepository.deleteById(id);
     }
+
+    @Override
+    public Tarea marcarRealizada(Long tareaId) {
+
+        Tarea tarea = tareaRepository.findById(tareaId)
+                .orElseThrow(() -> new IllegalArgumentException("Tarea no encontrada"));
+
+        tarea.setRealizada(true);
+
+        return tareaRepository.save(tarea);
+    }
+
+
 }

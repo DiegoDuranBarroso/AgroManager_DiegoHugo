@@ -3,15 +3,19 @@ package com.example.AgroManager_DiegoHugo.controllers;
 import com.example.AgroManager_DiegoHugo.data.model.Empleado;
 import com.example.AgroManager_DiegoHugo.data.model.Fichaje;
 import com.example.AgroManager_DiegoHugo.data.model.Finca;
+import com.example.AgroManager_DiegoHugo.data.model.Gerente;
+import com.example.AgroManager_DiegoHugo.data.model.Rol;
+import com.example.AgroManager_DiegoHugo.data.model.Usuario;
+import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
 import com.example.AgroManager_DiegoHugo.data.services.FichajeService;
 import com.example.AgroManager_DiegoHugo.data.services.FincaService;
+import com.example.AgroManager_DiegoHugo.data.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/fichajes")
@@ -21,41 +25,82 @@ public class FichajeController {
     private final EmpleadoService empleadoService;
     private final FincaService fincaService;
 
+    // NUEVOS CAMPOS
+    private final UsuarioService usuarioService;
+    private final GerenteRepository gerenteRepository;
+
     @Autowired
     public FichajeController(FichajeService fichajeService,
                              EmpleadoService empleadoService,
-                             FincaService fincaService) {
+                             FincaService fincaService,
+                             UsuarioService usuarioService,
+                             GerenteRepository gerenteRepository) {
         this.fichajeService = fichajeService;
         this.empleadoService = empleadoService;
         this.fincaService = fincaService;
+        this.usuarioService = usuarioService;
+        this.gerenteRepository = gerenteRepository;
     }
 
-    // ================= LISTADO (solo empleado) =================
-    // Llamado desde empleadoHome:  /fichajes/?empleadoId=X
+    // ================= LISTADO (empleado o gerente) =================
+    // Empleado: /fichajes/?empleadoId=X
+    // Gerente:  /fichajes/  (sin empleadoId) -> ve todos
 
     @GetMapping("/")
     public String verFichajesEmpleado(
             @RequestParam(name = "empleadoId", required = false) Long empleadoId,
             Model model) {
 
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion().orElse(null);
+
+        // ===== GERENTE sin filtro → ver todos =====
+        if (usuario != null && usuario.getRol() == Rol.GERENTE && empleadoId == null) {
+
+            Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
+                    .orElseThrow(() -> new IllegalStateException("Gerente no encontrado"));
+
+            model.addAttribute("vistaGerente", true);
+            model.addAttribute("gerente", gerente);
+
+            model.addAttribute("fichajes", fichajeService.encontrarTodos());
+
+            // PARA EL FILTRO
+            model.addAttribute("empleados", empleadoService.encontrarActivos());
+            model.addAttribute("empleadoSeleccionado", null);
+
+            return "fichaje";
+        }
+
+        // ===== EMPLEADO o GERENTE filtrando por empleado =====
         if (empleadoId == null) {
-            // Si alguien entra sin empleadoId, lo mandamos al “home”
             return "redirect:/home";
         }
 
         Empleado emp = empleadoService.encontrarPorId(empleadoId)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
 
-        List<Fichaje> fichajes = fichajeService.fichajesDeEmpleado(empleadoId);
-
         model.addAttribute("empleado", emp);
-        model.addAttribute("fichajes", fichajes);
+        model.addAttribute("fichajes", fichajeService.fichajesDeEmpleado(empleadoId));
 
-        return "fichaje";   // templates/fichaje.html (versión solo empleado)
+        // Si el que está logueado es gerente → vistaGerente activa
+        if (usuario != null && usuario.getRol() == Rol.GERENTE) {
+
+            Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
+                    .orElseThrow(() -> new IllegalStateException("Gerente no encontrado"));
+
+            model.addAttribute("vistaGerente", true);
+            model.addAttribute("gerente", gerente);
+
+            // para el filtro
+            model.addAttribute("empleados", empleadoService.encontrarActivos());
+            model.addAttribute("empleadoSeleccionado", empleadoId);
+        }
+
+        return "fichaje";
     }
 
+
     // ================= NUEVO FICHAJE (inicio, solo empleado) =================
-    // Llamado desde empleadoHome: /fichajes/nuevo?empleadoId=X
 
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevoFichaje(
@@ -68,7 +113,7 @@ public class FichajeController {
         Fichaje fichaje = new Fichaje();
 
         model.addAttribute("fichaje", fichaje);
-        model.addAttribute("empleado", emp);                  // solo este empleado
+        model.addAttribute("empleado", emp);
         model.addAttribute("fincas", fincaService.encontrarTodas());
 
         return "fichajeForm";
@@ -86,12 +131,10 @@ public class FichajeController {
 
         fichajeService.iniciarFichaje(empleado, finca);
 
-        // Volver al listado de ese empleado
         return "redirect:/fichajes/?empleadoId=" + empleadoId;
     }
 
     // ================= MARCAR SALIDA (solo empleado) =================
-    // Llamado desde la tabla de fichajes: /fichajes/fin?empleadoId=X
 
     @PostMapping("/fin")
     public String registrarFin(@RequestParam Long empleadoId) {
@@ -99,8 +142,7 @@ public class FichajeController {
         return "redirect:/fichajes/?empleadoId=" + empleadoId;
     }
 
-    // ================= ELIMINAR FICHAJE (opcional, p.ej. para gerente) =================
-    // Si más adelante tienes una vista de gerente con borrado, reutilizas esto.
+    // ================= ELIMINAR FICHAJE =================
 
     @PostMapping("/{id}/eliminar")
     public String eliminarFichaje(@PathVariable Long id) {
@@ -117,7 +159,8 @@ public class FichajeController {
         if (empleadoId != null) {
             return "redirect:/fichajes/?empleadoId=" + empleadoId;
         }
-        // Si no sabemos a qué empleado volver, mandamos al home
         return "redirect:/home";
     }
+
+
 }

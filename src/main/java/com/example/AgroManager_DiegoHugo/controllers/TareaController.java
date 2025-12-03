@@ -171,4 +171,17 @@ public class TareaController {
         tareaService.eliminarPorId(id);
         return "redirect:/tareas/";
     }
+
+    @PostMapping("/{id}/realizado")
+    public String marcarRealizado(@PathVariable Long id) {
+
+        Tarea tarea = tareaService.marcarRealizada(id);
+
+        Long empleadoId = tarea.getEmpleado().getId();
+
+        return "redirect:/tareas/?modo=EMPLEADO&empleadoId=" + empleadoId;
+    }
+
+
+
 }

@@ -20,6 +20,9 @@ public class Tarea {
     @Column(nullable = false)
     private BigDecimal horas;
 
+    @Column(nullable = false)
+    private boolean realizada = false;
+
     @ManyToOne(optional = false)
     private Empleado empleado;
 
@@ -83,4 +86,13 @@ public class Tarea {
     public void setFinca(Finca finca) {
         this.finca = finca;
     }
+
+    public boolean isRealizada() {
+        return realizada;
+    }
+
+    public void setRealizada(boolean realizada) {
+        this.realizada = realizada;
+    }
+
 }

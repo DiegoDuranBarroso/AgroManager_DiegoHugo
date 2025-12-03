@@ -75,7 +75,10 @@ public class FincaController {
     // ================== NUEVA FINCA (POST) ==================
     @PostMapping("/guardar")
     public String crearFinca(@RequestParam String nombre,
-                             @RequestParam EstadoFinca estado) {
+                             @RequestParam EstadoFinca estado,
+                             @RequestParam(required = false) String ciudad,
+                             @RequestParam(required = false) String provincia,
+                             @RequestParam(required = false) Double area) {
 
         Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
                 .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
@@ -91,6 +94,14 @@ public class FincaController {
         finca.setNombre(nombre.trim());
         finca.setEstado(estado);
         finca.setGerente(gerente);
+
+        if (ciudad != null && !ciudad.trim().isEmpty()) {
+            finca.setCiudad(ciudad.trim());
+        }
+        if (provincia != null && !provincia.trim().isEmpty()) {
+            finca.setProvincia(provincia.trim());
+        }
+        finca.setArea(area); // puede ser null
 
         fincaService.guardar(finca);
 
@@ -122,12 +133,30 @@ public class FincaController {
     @PostMapping("/{id}")
     public String actualizarFinca(
             @PathVariable Long id,
-            @RequestParam("estado") EstadoFinca estado) {
+            @RequestParam("estado") EstadoFinca estado,
+            @RequestParam(required = false) String ciudad,
+            @RequestParam(required = false) String provincia,
+            @RequestParam(required = false) Double area) {
 
         Finca finca = fincaService.encontrarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
         finca.setEstado(estado);
+
+        if (ciudad != null && !ciudad.trim().isEmpty()) {
+            finca.setCiudad(ciudad.trim());
+        } else {
+            finca.setCiudad(null);
+        }
+
+        if (provincia != null && !provincia.trim().isEmpty()) {
+            finca.setProvincia(provincia.trim());
+        } else {
+            finca.setProvincia(null);
+        }
+
+        finca.setArea(area); // puede ser null
+
         fincaService.guardar(finca);
 
         return "redirect:/fincas/";

@@ -6,7 +6,6 @@
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
 
-
     <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -19,15 +18,12 @@
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <!-- Nombre del gerente logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${gerente.nombre}">
             👤 Nombre gerente
@@ -38,16 +34,15 @@
 
 <div class="container mt-4">
 
-    <h2 class="fw-bold mb-4">Editar estado de la finca</h2>
+    <h2 class="fw-bold mb-4">Editar finca</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <!-- OJO: ya no usamos th:object, solo enviamos el estado -->
             <form th:action="@{|/fincas/${finca.id}|}"
                   method="post">
 
-                <!-- Nombre (solo lectura, NO editable) -->
+                <!-- Nombre (solo lectura) -->
                 <div class="mb-3">
                     <label class="form-label">Nombre de la finca</label>
                     <input type="text"
@@ -56,7 +51,7 @@
                            readonly>
                 </div>
 
-                <!-- Gerente (solo lectura, como ya tenías) -->
+                <!-- Gerente (solo lectura) -->
                 <div class="mb-3">
                     <label class="form-label">Gerente</label>
                     <input type="text" class="form-control"
@@ -64,7 +59,32 @@
                            readonly>
                 </div>
 
-                <!-- Estado (ÚNICO campo editable) -->
+                <!-- Ciudad -->
+                <div class="mb-3">
+                    <label class="form-label">Ciudad</label>
+                    <input type="text" class="form-control"
+                           name="ciudad"
+                           th:value="${finca.ciudad}">
+                </div>
+
+                <!-- Provincia -->
+                <div class="mb-3">
+                    <label class="form-label">Provincia</label>
+                    <input type="text" class="form-control"
+                           name="provincia"
+                           th:value="${finca.provincia}">
+                </div>
+
+                <!-- Área -->
+                <div class="mb-3">
+                    <label class="form-label">Área (ha)</label>
+                    <input type="number" step="0.01" min="0"
+                           class="form-control"
+                           name="area"
+                           th:value="${finca.area}">
+                </div>
+
+                <!-- Estado -->
                 <div class="mb-3">
                     <label class="form-label">Estado</label>
                     <select class="form-select" name="estado">

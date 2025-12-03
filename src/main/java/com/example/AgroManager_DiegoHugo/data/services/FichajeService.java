@@ -28,4 +28,7 @@ public interface FichajeService {
 
     void eliminarPorId(Long id);
 
+    // NUEVO
+    List<Fichaje> encontrarTodos();
+
 }
