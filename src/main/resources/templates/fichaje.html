@@ -7,6 +7,7 @@
     </title>
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -65,7 +66,8 @@
         }
     </style>
 </head>
-<body class="bg-light">
+
+<body>
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -87,107 +89,111 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<!-- ==== FONDO APLICADO (fondos2.css) ==== -->
+<div class="home-wrapper">
+    <div class="home-content container">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold"
-            th:text="${vistaGerente} ? 'Fichajes empleados' : 'Mis fichajes'">
-            Mis fichajes
-        </h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold"
+                th:text="${vistaGerente} ? 'Fichajes empleados' : 'Mis fichajes'">
+                Mis fichajes
+            </h2>
 
-        <!-- Botón nuevo fichaje solo si NO es vista gerente -->
-        <a class="btn btn-success"
-           th:if="${vistaGerente == null or !vistaGerente}"
-           th:href="@{|/fichajes/nuevo?empleadoId=${empleado.id}|}">
-            + Nuevo fichaje de inicio
-        </a>
-    </div>
-
-    <!-- FILTRO POR EMPLEADO — SOLO GERENTE -->
-    <div th:if="${vistaGerente}">
-        <form class="row g-2 mb-4" th:action="@{/fichajes/}" method="get">
-            <div class="col-md-4">
-                <label class="form-label">Empleado</label>
-                <select class="form-select" name="empleadoId">
-                    <option value="">-- Todos --</option>
-
-                    <option th:each="emp : ${empleados}"
-                            th:value="${emp.id}"
-                            th:selected="${empleadoSeleccionado != null and empleadoSeleccionado == emp.id}"
-                            th:text="${emp.nombre + ' (' + emp.dni + ')'}">
-                    </option>
-                </select>
-            </div>
-
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
-                <a th:href="@{/fichajes/}" class="btn btn-outline-secondary">Limpiar</a>
-            </div>
-        </form>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-striped mb-0">
-                <thead class="table-success">
-                <tr>
-                    <th>ID</th>
-                    <th th:if="${vistaGerente}">Empleado</th>
-                    <th>Finca</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr th:each="fic : ${fichajes}">
-                    <td th:text="${fic.id}"></td>
-
-                    <td th:if="${vistaGerente}"
-                        th:text="${fic.empleado != null ? fic.empleado.nombre : '—'}"></td>
-
-                    <td th:text="${fic.finca != null ? fic.finca.nombre : '—'}"></td>
-
-                    <td th:text="${fic.inicio != null ? #temporals.format(fic.inicio, 'yyyy-MM-dd HH:mm') : '—'}"></td>
-                    <td th:text="${fic.fin != null ? #temporals.format(fic.fin, 'yyyy-MM-dd HH:mm') : '—'}"></td>
-
-                    <td th:text="${fic.estado}"></td>
-
-                    <td>
-                        <!-- Empleado puede marcar salida si no es vistaGerente y aún no tiene fin -->
-                        <form th:if="${(vistaGerente == null or !vistaGerente) and fic.fin == null}"
-                              th:action="@{|/fichajes/fin?empleadoId=${empleado.id}|}"
-                              method="post"
-                              class="d-inline">
-                            <button class="btn btn-sm btn-primary" type="submit">
-                                Marcar salida
-                            </button>
-                        </form>
-
-                        <!-- Gerente puede eliminar -->
-                        <form th:if="${vistaGerente}"
-                              th:action="@{|/fichajes/${fic.id}/eliminar|}"
-                              method="post"
-                              class="d-inline">
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('¿Eliminar este fichaje?')">
-                                Eliminar
-                            </button>
-                        </form>
-
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <!-- Botón nuevo fichaje solo si NO es vista gerente -->
+            <a class="btn btn-success"
+               th:if="${vistaGerente == null or !vistaGerente}"
+               th:href="@{|/fichajes/nuevo?empleadoId=${empleado.id}|}">
+                + Nuevo fichaje de inicio
+            </a>
         </div>
-    </div>
 
-    <div class="mt-3">
-        <a th:href="@{/home}" class="btn btn-secondary">Volver al panel</a>
-    </div>
+        <!-- FILTRO POR EMPLEADO — SOLO GERENTE -->
+        <div th:if="${vistaGerente}">
+            <form class="row g-2 mb-4" th:action="@{/fichajes/}" method="get">
+                <div class="col-md-4">
+                    <label class="form-label">Empleado</label>
+                    <select class="form-select" name="empleadoId">
+                        <option value="">-- Todos --</option>
 
+                        <option th:each="emp : ${empleados}"
+                                th:value="${emp.id}"
+                                th:selected="${empleadoSeleccionado != null and empleadoSeleccionado == emp.id}"
+                                th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
+                    <a th:href="@{/fichajes/}" class="btn btn-outline-secondary">Limpiar</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead class="table-success">
+                    <tr>
+                        <th>ID</th>
+                        <th th:if="${vistaGerente}">Empleado</th>
+                        <th>Finca</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="fic : ${fichajes}">
+
+                        <td th:text="${fic.id}"></td>
+
+                        <td th:if="${vistaGerente}"
+                            th:text="${fic.empleado != null ? fic.empleado.nombre : '—'}"></td>
+
+                        <td th:text="${fic.finca != null ? fic.finca.nombre : '—'}"></td>
+
+                        <td th:text="${fic.inicio != null ? #temporals.format(fic.inicio, 'yyyy-MM-dd HH:mm') : '—'}"></td>
+                        <td th:text="${fic.fin != null ? #temporals.format(fic.fin, 'yyyy-MM-dd HH:mm') : '—'}"></td>
+
+                        <td th:text="${fic.estado}"></td>
+
+                        <td>
+                            <!-- Empleado puede marcar salida si no es vistaGerente y aún no tiene fin -->
+                            <form th:if="${(vistaGerente == null or !vistaGerente) and fic.fin == null}"
+                                  th:action="@{|/fichajes/fin?empleadoId=${empleado.id}|}"
+                                  method="post"
+                                  class="d-inline">
+                                <button class="btn btn-sm btn-primary" type="submit">
+                                    Marcar salida
+                                </button>
+                            </form>
+
+                            <!-- Gerente puede eliminar -->
+                            <form th:if="${vistaGerente}"
+                                  th:action="@{|/fichajes/${fic.id}/eliminar|}"
+                                  method="post"
+                                  class="d-inline">
+                                <button class="btn btn-sm btn-danger"
+                                        onclick="return confirm('¿Eliminar este fichaje?')">
+                                    Eliminar
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a th:href="@{/home}" class="btn btn-secondary">Volver al panel</a>
+        </div>
+
+    </div>
 </div>
 
 <!-- MODAL SALIDA REGISTRADA (solo si salidaOK == true) -->
@@ -224,7 +230,7 @@
     </div>
 </div>
 
-<footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
     <div class="container text-center text-white">
         <p class="mb-2">© 2025 <strong>AgroManager</strong> — Todos los derechos reservados.</p>
 

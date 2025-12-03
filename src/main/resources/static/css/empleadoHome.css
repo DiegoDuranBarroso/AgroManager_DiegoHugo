@@ -8,7 +8,7 @@ body {
     position: relative;
     /* altura total menos navbar (56px aprox.) y footer (~220px) */
     min-height: calc(100vh - 56px - 220px);
-    background-image: url('/img/fondo.jpg');
+    background-image: url('/img/fondo1.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

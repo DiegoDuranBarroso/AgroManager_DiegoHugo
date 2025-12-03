@@ -109,6 +109,7 @@ public class FincaController {
     }
 
     // ================== FORMULARIO EDITAR ==================
+    // ================== FORMULARIO EDITAR ==================
     @GetMapping("/{id}/editar")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
 
@@ -118,7 +119,10 @@ public class FincaController {
         model.addAttribute("finca", finca);
         model.addAttribute("estados", Arrays.asList(EstadoFinca.values()));
 
-        // ---- También añadir gerente aquí ----
+        // lista de gerentes para el <select>
+        model.addAttribute("gerentes", gerenteRepository.findAll());
+
+        // ---- gerente en sesión para el navbar ----
         usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
             if (usuario.getRol() == Rol.GERENTE) {
                 gerenteRepository.findByUsuarioId(usuario.getId())
@@ -129,10 +133,14 @@ public class FincaController {
         return "fincaForm"; // templates/fincaForm.html
     }
 
+
     // ================== POST EDITAR ==================
+// ================== POST EDITAR ==================
     @PostMapping("/{id}")
     public String actualizarFinca(
             @PathVariable Long id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("gerenteId") Long gerenteId,
             @RequestParam("estado") EstadoFinca estado,
             @RequestParam(required = false) String ciudad,
             @RequestParam(required = false) String provincia,
@@ -141,26 +149,39 @@ public class FincaController {
         Finca finca = fincaService.encontrarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
+        // actualizar nombre
+        finca.setNombre(nombre != null ? nombre.trim() : null);
+
+        // actualizar gerente
+        Gerente nuevoGerente = gerenteRepository.findById(gerenteId)
+                .orElseThrow(() -> new IllegalArgumentException("Gerente no encontrado"));
+        finca.setGerente(nuevoGerente);
+
+        // actualizar estado
         finca.setEstado(estado);
 
+        // ciudad
         if (ciudad != null && !ciudad.trim().isEmpty()) {
             finca.setCiudad(ciudad.trim());
         } else {
             finca.setCiudad(null);
         }
 
+        // provincia
         if (provincia != null && !provincia.trim().isEmpty()) {
             finca.setProvincia(provincia.trim());
         } else {
             finca.setProvincia(null);
         }
 
-        finca.setArea(area); // puede ser null
+        // área (puede ser null)
+        finca.setArea(area);
 
         fincaService.guardar(finca);
 
         return "redirect:/fincas/";
     }
+
 
     // ================== ELIMINAR FINCA ==================
     @PostMapping("/{id}/eliminar")

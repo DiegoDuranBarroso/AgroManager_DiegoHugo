@@ -7,11 +7,12 @@ body {
 .home-wrapper {
     position: relative;
     min-height: calc(100vh - 56px - 220px); /* navbar + footer aprox. */
-    background-image: url('/img/fondo.jpg');
+    background-image: url('/img/fondo1.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
+
 
 .home-wrapper::before {
     content: "";

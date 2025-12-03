@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Nuevo Contrato</title>
+
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
-
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
 
     <!-- Bootstrap -->
     <link rel="stylesheet"
@@ -14,118 +15,116 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 
-<body class="bg-light">
+<body>
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <!-- Nombre del gerente logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${gerente.nombre}">
             👤 Nombre gerente
         </span>
-
     </div>
 </nav>
 
-<div class="container mt-4">
+<!-- ==== FONDO GLOBAL ==== -->
+<div class="home-wrapper">
+    <div class="home-content container">
 
-    <h2 class="fw-bold mb-3">Nuevo Contrato</h2>
+        <h2 class="fw-bold mb-3">Nuevo Contrato</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card shadow-sm">
+            <div class="card-body">
 
-            <!-- IMPORTANTE: coincide con @PostMapping("/guardar") -->
-            <form th:action="@{/contratos/guardar}"
-                  method="post"
-                  class="row g-3">
+                <form th:action="@{/contratos/guardar}"
+                      method="post"
+                      class="row g-3">
 
-                <!-- EMPLEADO -->
-                <div class="col-md-6">
-                    <label class="form-label">Empleado</label>
-                    <select class="form-select" name="empleadoId" required>
-                        <option value="">-- Selecciona empleado --</option>
-                        <option th:each="emp : ${empleados}"
-                                th:value="${emp.id}"
-                                th:selected="${empleadoIdSeleccionado != null and empleadoIdSeleccionado == emp.id}"
-                                th:text="${emp.nombre + ' (' + emp.dni + ')'}">
-                        </option>
-                    </select>
-                </div>
+                    <!-- EMPLEADO -->
+                    <div class="col-md-6">
+                        <label class="form-label">Empleado</label>
+                        <select class="form-select" name="empleadoId" required>
+                            <option value="">-- Selecciona empleado --</option>
+                            <option th:each="emp : ${empleados}"
+                                    th:value="${emp.id}"
+                                    th:selected="${empleadoIdSeleccionado != null and empleadoIdSeleccionado == emp.id}"
+                                    th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                            </option>
+                        </select>
+                    </div>
 
-                <!-- TIPO DE CONTRATO -->
-                <div class="col-md-6">
-                    <label class="form-label">Tipo de contrato</label>
-                    <select class="form-select" name="tipo" required>
-                        <option value="">-- Selecciona tipo --</option>
-                        <option th:each="t : ${tiposContrato}"
-                                th:value="${t}"
-                                th:text="${t}">
-                        </option>
-                    </select>
-                </div>
+                    <!-- TIPO DE CONTRATO -->
+                    <div class="col-md-6">
+                        <label class="form-label">Tipo de contrato</label>
+                        <select class="form-select" name="tipo" required>
+                            <option value="">-- Selecciona tipo --</option>
+                            <option th:each="t : ${tiposContrato}"
+                                    th:value="${t}"
+                                    th:text="${t}">
+                            </option>
+                        </select>
+                    </div>
 
-                <!-- FECHA INICIO -->
-                <div class="col-md-4">
-                    <label class="form-label">Fecha inicio</label>
-                    <input type="date"
-                           class="form-control"
-                           name="fechaInicio"
-                           required>
-                </div>
+                    <!-- FECHA INICIO -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha inicio</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaInicio"
+                               required>
+                    </div>
 
-                <!-- FECHA FIN (opcional) -->
-                <div class="col-md-4">
-                    <label class="form-label">Fecha fin (opcional)</label>
-                    <input type="date"
-                           class="form-control"
-                           name="fechaFin">
-                </div>
+                    <!-- FECHA FIN -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha fin (opcional)</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaFin">
+                    </div>
 
-                <!-- SALARIO BASE -->
-                <div class="col-md-4">
-                    <label class="form-label">Salario base</label>
-                    <input type="number"
-                           class="form-control"
-                           name="salarioBase"
-                           step="0.01"
-                           min="0"
-                           required>
-                </div>
+                    <!-- SALARIO BASE -->
+                    <div class="col-md-4">
+                        <label class="form-label">Salario base</label>
+                        <input type="number"
+                               class="form-control"
+                               name="salarioBase"
+                               step="0.01"
+                               min="0"
+                               required>
+                    </div>
 
-                <!-- TARIFA HORA -->
-                <div class="col-md-4">
-                    <label class="form-label">Tarifa hora</label>
-                    <input type="number"
-                           class="form-control"
-                           name="tarifaHora"
-                           step="0.01"
-                           min="0"
-                           required>
-                </div>
+                    <!-- TARIFA HORA -->
+                    <div class="col-md-4">
+                        <label class="form-label">Tarifa hora</label>
+                        <input type="number"
+                               class="form-control"
+                               name="tarifaHora"
+                               step="0.01"
+                               min="0"
+                               required>
+                    </div>
 
-                <!-- BOTONES -->
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-success">Guardar</button>
-                    <a th:href="@{/contratos/}" class="btn btn-secondary">Cancelar</a>
-                </div>
+                    <!-- BOTONES -->
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a th:href="@{/contratos/}" class="btn btn-secondary">Cancelar</a>
+                    </div>
 
-            </form>
+                </form>
 
+            </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
-<footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
     <div class="container text-center text-white">
 
         <p class="mb-2">

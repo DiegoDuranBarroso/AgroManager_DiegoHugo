@@ -5,25 +5,27 @@
     <title>Nuevo Fichaje</title>
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
 
+    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
-<body class="bg-light">
 
+<body>
+
+<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 🦺 Empleado</span>
         </a>
 
-        <!-- Nombre del empleado logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${empleado.nombre}">
             👤 Nombre empleado
@@ -32,59 +34,62 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<!-- ==== FONDO APLICADO ==== -->
+<div class="home-wrapper">
+    <div class="home-content container">
 
-    <h2 class="fw-bold mb-3">Nuevo Fichaje</h2>
+        <h2 class="fw-bold mb-3">Nuevo Fichaje</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card shadow-sm">
+            <div class="card-body">
 
-            <form th:action="@{/fichajes/}" method="post">
+                <form th:action="@{/fichajes/}" method="post">
 
-                <!-- Info del empleado (no editable, solo informativa) -->
-                <div class="mb-3">
-                    <label class="form-label">Empleado</label>
-                    <div class="alert alert-secondary mb-1" role="alert">
-                        <strong th:text="${empleado.nombre}">Nombre empleado</strong>
-                        <span th:text="' — DNI: ' + ${empleado.dni}"> — DNI: XXXXXXXXX</span>
+                    <!-- Info del empleado -->
+                    <div class="mb-3">
+                        <label class="form-label">Empleado</label>
+                        <div class="alert alert-secondary mb-1" role="alert">
+                            <strong th:text="${empleado.nombre}">Nombre empleado</strong>
+                            <span th:text="' — DNI: ' + ${empleado.dni}"> — DNI: XXXXXXXXX</span>
+                        </div>
+                        <input type="hidden" name="empleadoId" th:value="${empleado.id}">
                     </div>
-                    <!-- id oculto que se envía al controlador -->
-                    <input type="hidden" name="empleadoId" th:value="${empleado.id}">
-                </div>
 
-                <!-- Finca -->
-                <div class="mb-3">
-                    <label class="form-label">Finca</label>
-                    <select class="form-select" name="fincaId" required>
-                        <option value="">-- Selecciona una finca --</option>
-                        <option th:each="f : ${fincas}"
-                                th:value="${f.id}"
-                                th:text="${f.nombre}">
-                        </option>
-                    </select>
-                </div>
+                    <!-- Finca -->
+                    <div class="mb-3">
+                        <label class="form-label">Finca</label>
+                        <select class="form-select" name="fincaId" required>
+                            <option value="">-- Selecciona una finca --</option>
+                            <option th:each="f : ${fincas}"
+                                    th:value="${f.id}"
+                                    th:text="${f.nombre}">
+                            </option>
+                        </select>
+                    </div>
 
-                <div class="d-grid mt-3">
-                    <button type="submit" class="btn btn-success">
-                        Guardar fichaje de inicio
-                    </button>
-                </div>
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success">
+                            Guardar fichaje de inicio
+                        </button>
+                    </div>
 
-            </form>
+                </form>
 
+            </div>
         </div>
-    </div>
 
-    <div class="mt-3">
-        <a th:href="@{|/fichajes/?empleadoId=${empleado.id}|}"
-           class="btn btn-outline-secondary">
-            Volver a mis fichajes
-        </a>
-    </div>
+        <div class="mt-3">
+            <a th:href="@{|/fichajes/?empleadoId=${empleado.id}|}"
+               class="btn btn-outline-secondary">
+                Volver a mis fichajes
+            </a>
+        </div>
 
+    </div>
 </div>
 
-<footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
+<!-- FOOTER -->
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
     <div class="container text-center text-white">
 
         <p class="mb-2">
@@ -122,7 +127,8 @@
         </div>
 
         <p class="mb-0 text-secondary">
-            APP creada por <strong>Diego Durán Barroso</strong> y <strong>Hugo Sánchez de la Roda Rivera</strong>.
+            APP creada por <strong>Diego Durán Barroso</strong> y
+            <strong>Hugo Sánchez de la Roda Rivera</strong>.
         </p>
 
     </div>

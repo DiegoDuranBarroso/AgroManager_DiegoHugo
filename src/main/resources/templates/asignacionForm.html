@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Nueva Asignación</title>
+
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
-
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
 
     <!-- Bootstrap -->
     <link rel="stylesheet"
@@ -14,20 +15,17 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 
-<body class="bg-light">
+<body>
 
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Logo + nombre de la app (vista GERENTE) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Usa th:src para recursos estáticos -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <!-- Nombre del gerente logueado -->
         <span class="navbar-text text-white"
               th:text="'👤 ' + ${gerente.nombre}">
             👤 Nombre gerente
@@ -36,96 +34,85 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<!-- ===== FONDO GLOBAL ===== -->
+<div class="home-wrapper">
+    <div class="home-content container">
 
-    <h2 class="fw-bold mb-3">Nueva Asignación</h2>
+        <h2 class="fw-bold mb-3">Nueva Asignación</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card shadow-sm">
+            <div class="card-body">
 
-            <!--
-                IMPORTANTE:
-                Este formulario manda un POST a /asignaciones/
-                con parámetros:
-                - empleadoId
-                - fincaId
-                - fechaInicio
-                - fechaFin (opcional)
-                - horasEstimadas (opcional)
-            -->
-            <form th:action="@{/asignaciones/}"
-                  method="post"
-                  class="row g-3">
+                <form th:action="@{/asignaciones/}"
+                      method="post"
+                      class="row g-3">
 
-                <!-- EMPLEADO -->
-                <div class="col-md-6">
-                    <label class="form-label">Empleado</label>
-                    <select class="form-select" name="empleadoId" required>
-                        <!-- opción vacía estática (sin th:*) -->
-                        <option value="">-- Selecciona empleado --</option>
+                    <!-- EMPLEADO -->
+                    <div class="col-md-6">
+                        <label class="form-label">Empleado</label>
+                        <select class="form-select" name="empleadoId" required>
+                            <option value="">-- Selecciona empleado --</option>
+                            <option th:each="emp : ${empleados}"
+                                    th:value="${emp.id}"
+                                    th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                            </option>
+                        </select>
+                    </div>
 
-                        <!-- empleados activos recibidos en el modelo -->
-                        <option th:each="emp : ${empleados}"
-                                th:value="${emp.id}"
-                                th:text="${emp.nombre + ' (' + emp.dni + ')'}">
-                        </option>
-                    </select>
-                </div>
+                    <!-- FINCA -->
+                    <div class="col-md-6">
+                        <label class="form-label">Finca</label>
+                        <select class="form-select" name="fincaId" required>
+                            <option value="">-- Selecciona finca --</option>
+                            <option th:each="f : ${fincas}"
+                                    th:value="${f.id}"
+                                    th:text="${f.nombre}">
+                            </option>
+                        </select>
+                    </div>
 
-                <!-- FINCA -->
-                <div class="col-md-6">
-                    <label class="form-label">Finca</label>
-                    <select class="form-select" name="fincaId" required>
-                        <option value="">-- Selecciona finca --</option>
+                    <!-- FECHA INICIO -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha inicio</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaInicio"
+                               required>
+                    </div>
 
-                        <option th:each="f : ${fincas}"
-                                th:value="${f.id}"
-                                th:text="${f.nombre}">
-                        </option>
-                    </select>
-                </div>
+                    <!-- FECHA FIN -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha fin (opcional)</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaFin">
+                    </div>
 
-                <!-- FECHA INICIO -->
-                <div class="col-md-4">
-                    <label class="form-label">Fecha inicio</label>
-                    <input type="date"
-                           class="form-control"
-                           name="fechaInicio"
-                           required>
-                </div>
+                    <!-- HORAS ESTIMADAS -->
+                    <div class="col-md-4">
+                        <label class="form-label">Horas estimadas</label>
+                        <input type="number"
+                               class="form-control"
+                               name="horasEstimadas"
+                               min="0"
+                               step="0.25">
+                    </div>
 
-                <!-- FECHA FIN (opcional) -->
-                <div class="col-md-4">
-                    <label class="form-label">Fecha fin (opcional)</label>
-                    <input type="date"
-                           class="form-control"
-                           name="fechaFin">
-                </div>
+                    <!-- BOTONES -->
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a th:href="@{/asignaciones/}" class="btn btn-secondary">Cancelar</a>
+                    </div>
 
-                <!-- HORAS ESTIMADAS (opcional, por si la usas en la entidad) -->
-                <div class="col-md-4">
-                    <label class="form-label">Horas estimadas</label>
-                    <input type="number"
-                           class="form-control"
-                           name="horasEstimadas"
-                           min="0"
-                           step="0.25">
-                </div>
+                </form>
 
-                <!-- BOTONES -->
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-success">Guardar</button>
-                    <a th:href="@{/asignaciones/}" class="btn btn-secondary">Cancelar</a>
-                </div>
-
-            </form>
-
+            </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
-<footer style="background-color: #1e1e1e; padding: 25px 0; margin-top: 40px;">
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
     <div class="container text-center text-white">
 
         <p class="mb-2">
