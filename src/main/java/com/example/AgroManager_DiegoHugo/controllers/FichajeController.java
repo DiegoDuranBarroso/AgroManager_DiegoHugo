@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -125,20 +126,32 @@ public class FichajeController {
         return "fichajeForm";
     }
 
-    @PostMapping("/")
+    @PostMapping("/nuevo")
     public String guardarFichaje(@RequestParam Long empleadoId,
-                                 @RequestParam Long fincaId) {
+                                 @RequestParam Long fincaId,
+                                 RedirectAttributes redirectAttributes) {
 
+        // Cargamos empleado y finca
         Empleado empleado = empleadoService.encontrarPorId(empleadoId)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
 
         Finca finca = fincaService.encontrarPorId(fincaId)
                 .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
-        fichajeService.iniciarFichaje(empleado, finca);
+        try {
+            // Aquí puede saltar IllegalStateException si ya tiene un fichaje abierto
+            fichajeService.iniciarFichaje(empleado, finca);
 
-        return "redirect:/fichajes/?empleadoId=" + empleadoId;
+            // Si todo va bien, redirigimos normal
+            return "redirect:/fichajes/?empleadoId=" + empleadoId + "&modo=EMPLEADO";
+
+        } catch (IllegalStateException ex) {
+            // En vez de 500, guardamos el mensaje en flash y redirigimos igual
+            redirectAttributes.addFlashAttribute("errorFichaje", ex.getMessage());
+            return "redirect:/fichajes/?empleadoId=" + empleadoId + "&modo=EMPLEADO";
+        }
     }
+
 
     // ================= MARCAR SALIDA (solo empleado) =================
 

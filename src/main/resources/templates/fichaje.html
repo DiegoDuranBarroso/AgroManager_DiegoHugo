@@ -107,6 +107,15 @@
             </a>
         </div>
 
+        <!-- 🔴 MENSAJE DE ERROR SI HAY UNO -->
+        <div th:if="${errorFichaje}" class="alert alert-danger mt-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorFichaje}">
+                Ha ocurrido un error al iniciar el fichaje.
+            </span>
+        </div>
+
+
         <!-- FILTRO POR EMPLEADO — SOLO GERENTE -->
         <div th:if="${vistaGerente}">
             <form class="row g-2 mb-4" th:action="@{/fichajes/}" method="get">
