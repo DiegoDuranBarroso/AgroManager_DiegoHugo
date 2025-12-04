@@ -6,6 +6,7 @@ import com.example.AgroManager_DiegoHugo.data.model.Gerente;
 import com.example.AgroManager_DiegoHugo.data.model.Rol;
 import com.example.AgroManager_DiegoHugo.data.model.Usuario;
 import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
+import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
 import com.example.AgroManager_DiegoHugo.data.services.FincaService;
 import com.example.AgroManager_DiegoHugo.data.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class FincaController {
     @Autowired
     public FincaController(FincaService fincaService,
                            UsuarioService usuarioService,
-                           GerenteRepository gerenteRepository) {
+                           GerenteRepository gerenteRepository,
+                           EmpleadoService empleadoService) {
         this.fincaService = fincaService;
         this.usuarioService = usuarioService;
         this.gerenteRepository = gerenteRepository;
     }
+
 
     // ================== LISTAR FINCAS ==================
     @GetMapping("/")
@@ -38,7 +41,6 @@ public class FincaController {
 
         model.addAttribute("fincas", fincaService.encontrarTodas());
 
-        // ---- Cargar gerente para mostrar su nombre ----
         usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
             if (usuario.getRol() == Rol.GERENTE) {
                 gerenteRepository.findByUsuarioId(usuario.getId())
@@ -46,8 +48,9 @@ public class FincaController {
             }
         });
 
-        return "fincas"; // templates/fincas.html
+        return "fincas";
     }
+
 
     // ================== NUEVA FINCA (GET) ==================
     @GetMapping("/nueva")

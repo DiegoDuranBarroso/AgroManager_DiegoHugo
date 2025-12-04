@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Editar Finca</title>
+    <title>Nueva Finca</title>
 
     <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
     <link rel="stylesheet" th:href="@{/css/encabezado.css}">
@@ -11,8 +11,10 @@
     <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 
 <body>
@@ -39,46 +41,36 @@
 <div class="home-wrapper">
     <div class="home-content container">
 
-        <!-- TÍTULO (lo mantengo NEGRO como pediste) -->
-        <h2 class="fw-bold mb-4">Editar finca</h2>
+        <!-- TÍTULO -->
+        <h2 class="fw-bold mb-4">Nueva finca</h2>
 
         <div class="card shadow-sm">
             <div class="card-body">
 
-                <form th:action="@{|/fincas/${finca.id}|}"
-                      method="post">
+                <!-- IMPORTANTE: coincide con @PostMapping("/guardar") -->
+                <form th:action="@{/fincas/guardar}" method="post">
 
-                    <!-- Nombre (solo lectura) -->
+                    <!-- Nombre (obligatorio) -->
                     <div class="mb-3">
                         <label class="form-label">Nombre de la finca</label>
                         <input type="text"
                                class="form-control"
-                               th:value="${finca.nombre}"
-                               readonly>
-                    </div>
-
-                    <!-- Gerente (solo lectura) -->
-                    <div class="mb-3">
-                        <label class="form-label">Gerente</label>
-                        <input type="text" class="form-control"
-                               th:value="${finca.gerente != null ? finca.gerente.nombre : 'Sin gerente asignado'}"
-                               readonly>
+                               name="nombre"
+                               required>
                     </div>
 
                     <!-- Ciudad -->
                     <div class="mb-3">
                         <label class="form-label">Ciudad</label>
                         <input type="text" class="form-control"
-                               name="ciudad"
-                               th:value="${finca.ciudad}">
+                               name="ciudad">
                     </div>
 
                     <!-- Provincia -->
                     <div class="mb-3">
                         <label class="form-label">Provincia</label>
                         <input type="text" class="form-control"
-                               name="provincia"
-                               th:value="${finca.provincia}">
+                               name="provincia">
                     </div>
 
                     <!-- Área -->
@@ -86,8 +78,7 @@
                         <label class="form-label">Área (ha)</label>
                         <input type="number" step="0.01" min="0"
                                class="form-control"
-                               name="area"
-                               th:value="${finca.area}">
+                               name="area">
                     </div>
 
                     <!-- Estado -->
@@ -96,7 +87,6 @@
                         <select class="form-select" name="estado">
                             <option th:each="est : ${estados}"
                                     th:value="${est}"
-                                    th:selected="${est} == ${finca.estado}"
                                     th:text="${est}">
                             </option>
                         </select>
@@ -104,7 +94,7 @@
 
                     <!-- BOTONES -->
                     <div class="mt-4">
-                        <button class="btn btn-success" type="submit">Guardar cambios</button>
+                        <button class="btn btn-success" type="submit">Crear finca</button>
                         <a th:href="@{/fincas/}" class="btn btn-secondary">Cancelar</a>
                     </div>
 

@@ -27,4 +27,7 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
                                LocalDate fechaFin);
     void deleteByFincaId(Long fincaId);
 
+
+
+
 }

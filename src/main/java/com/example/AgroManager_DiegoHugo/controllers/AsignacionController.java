@@ -1,10 +1,6 @@
 package com.example.AgroManager_DiegoHugo.controllers;
 
-import com.example.AgroManager_DiegoHugo.data.model.Asignacion;
-import com.example.AgroManager_DiegoHugo.data.model.Empleado;
-import com.example.AgroManager_DiegoHugo.data.model.Finca;
-import com.example.AgroManager_DiegoHugo.data.model.Gerente;
-import com.example.AgroManager_DiegoHugo.data.model.Rol;
+import com.example.AgroManager_DiegoHugo.data.model.*;
 import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.AsignacionService;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
@@ -44,11 +40,29 @@ public class AsignacionController {
 
     // ===== LISTAR ASIGNACIONES =====
     @GetMapping("/")
-    public String listarAsignaciones(Model model) {
-        List<Asignacion> asignaciones = asignacionService.encontrarTodas();
+    public String listarAsignaciones(
+            @RequestParam(name = "empleadoId", required = false) Long empleadoId,
+            Model model) {
+
+        // Lista de asignaciones (filtradas o no)
+        List<Asignacion> asignaciones;
+
+        if (empleadoId != null) {
+            // Necesitas este método en el service/repo
+            asignaciones = asignacionService.encontrarPorEmpleadoId(empleadoId);
+            model.addAttribute("empleadoSeleccionado", empleadoId);
+        } else {
+            asignaciones = asignacionService.encontrarTodas();
+        }
+
         model.addAttribute("asignaciones", asignaciones);
 
-        // Añadir gerente logueado (si lo hay) para mostrar su nombre en la vista
+        // 👉 MUY IMPORTANTE: cargar empleados para el <select>
+        model.addAttribute("empleados", empleadoService.encontrarTodos());
+        // o si tienes solo activos:
+        // model.addAttribute("empleados", empleadoService.encontrarActivos());
+
+        // Nombre del gerente para el navbar (como ya tenías)
         usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
             if (usuario.getRol() == Rol.GERENTE) {
                 gerenteRepository.findByUsuarioId(usuario.getId())
@@ -56,8 +70,9 @@ public class AsignacionController {
             }
         });
 
-        return "asignaciones"; // templates/asignaciones.html
+        return "asignaciones"; // asignaciones.html
     }
+
 
     // ===== FORMULARIO NUEVA ASIGNACIÓN =====
     @GetMapping("/nueva")
@@ -112,5 +127,74 @@ public class AsignacionController {
         asignacionService.eliminarAsignacion(id);
         return "redirect:/asignaciones/";
     }
+
+    @GetMapping("/{id}/editar")
+    public String mostrarFormularioEditarAsignacion(@PathVariable Long id, Model model) {
+
+        // Usuario en sesión
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
+                .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
+
+        // Solo GERENTE edita asignaciones
+        if (usuario.getRol() != Rol.GERENTE) {
+            return "redirect:/home";
+        }
+
+        Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new IllegalStateException("Gerente no encontrado"));
+
+        Asignacion asignacion = asignacionService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asignación no encontrada"));
+
+        model.addAttribute("asignacion", asignacion);
+        model.addAttribute("gerente", gerente);
+        model.addAttribute("empleados", empleadoService.encontrarActivos()); // o encontrarTodos()
+        model.addAttribute("fincas", fincaService.encontrarTodas());
+
+        return "asignacionEditar";  // templates/asignacionEditar.html
+    }
+
+    @PostMapping("/{id}")
+    public String actualizarAsignacion(
+            @PathVariable Long id,
+            @RequestParam Long empleadoId,
+            @RequestParam Long fincaId,
+            @RequestParam String fechaInicio,
+            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) java.math.BigDecimal horasEstimadas
+    ) {
+        // Usuario en sesión
+        Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
+                .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
+
+        if (usuario.getRol() != Rol.GERENTE) {
+            return "redirect:/home";
+        }
+
+        Asignacion asignacion = asignacionService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asignación no encontrada"));
+
+        Empleado empleado = empleadoService.encontrarPorId(empleadoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+
+        Finca finca = fincaService.encontrarPorId(fincaId)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
+
+        asignacion.setEmpleado(empleado);
+        asignacion.setFinca(finca);
+        asignacion.setFechaInicio(LocalDate.parse(fechaInicio));
+
+        if (fechaFin != null && !fechaFin.isBlank()) {
+            asignacion.setFechaFin(LocalDate.parse(fechaFin));
+        } else {
+            asignacion.setFechaFin(null);
+        }
+
+
+        asignacionService.guardar(asignacion);  // método que veremos ahora
+
+        return "redirect:/asignaciones/";
+    }
+
 
 }

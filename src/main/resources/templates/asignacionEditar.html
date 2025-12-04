@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Asignación</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    <link rel="stylesheet" th:href="@{/css/encabezado.css}">
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <a class="navbar-brand d-flex align-items-center brand-box"
+           th:href="@{/home}">
+            <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
+            <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
+        </a>
+
+        <span class="navbar-text text-white"
+              th:text="'👤 ' + ${gerente.nombre}">
+            👤 Nombre gerente
+        </span>
+
+    </div>
+</nav>
+
+<!-- FONDO -->
+<div class="home-wrapper">
+    <div class="home-content container">
+
+        <h2 class="fw-bold mb-3">Editar asignación</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <form th:action="@{|/asignaciones/${asignacion.id}|}"
+                      method="post"
+                      class="row g-3">
+
+                    <!-- EMPLEADO -->
+                    <div class="col-md-6">
+                        <label class="form-label">Empleado</label>
+                        <select class="form-select" name="empleadoId" required>
+                            <option value="">-- Selecciona empleado --</option>
+                            <option th:each="emp : ${empleados}"
+                                    th:value="${emp.id}"
+                                    th:selected="${asignacion.empleado != null and emp.id == asignacion.empleado.id}"
+                                    th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- FINCA -->
+                    <div class="col-md-6">
+                        <label class="form-label">Finca</label>
+                        <select class="form-select" name="fincaId" required>
+                            <option value="">-- Selecciona finca --</option>
+                            <option th:each="f : ${fincas}"
+                                    th:value="${f.id}"
+                                    th:selected="${asignacion.finca != null and f.id == asignacion.finca.id}"
+                                    th:text="${f.nombre}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- FECHA INICIO -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha inicio</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaInicio"
+                               th:value="${asignacion.fechaInicio != null
+                                    ? #temporals.format(asignacion.fechaInicio, 'yyyy-MM-dd')
+                                    : ''}"
+                               required>
+                    </div>
+
+                    <!-- FECHA FIN -->
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha fin (opcional)</label>
+                        <input type="date"
+                               class="form-control"
+                               name="fechaFin"
+                               th:value="${asignacion.fechaFin != null
+                                    ? #temporals.format(asignacion.fechaFin, 'yyyy-MM-dd')
+                                    : ''}">
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                        <a th:href="@{/asignaciones/}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
+    <div class="container text-center text-white">
+        <p class="mb-2">
+            © 2025 <strong>AgroManager</strong> — Todos los derechos reservados.
+        </p>
+        <p class="mb-3">
+            Contacto:
+            <a href="mailto:contacto@agromanager.com"
+               style="color: #4caf50; text-decoration: none;">
+                contacto@agromanager.com
+            </a>
+        </p>
+        <p class="mb-0 text-secondary">
+            APP creada por <strong>Diego Durán Barroso</strong> y
+            <strong>Hugo Sánchez de la Roda Rivera</strong>.
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

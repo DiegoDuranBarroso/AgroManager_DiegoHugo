@@ -25,12 +25,6 @@ public class AsignacionServiceImpl implements AsignacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Asignacion> encontrarTodas() {
-        return asignacionRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Optional<Asignacion> encontrarPorId(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID de asignación inválido: " + id);
@@ -135,6 +129,29 @@ public class AsignacionServiceImpl implements AsignacionService {
         }
 
         asignacionRepository.deleteById(asignacionId);
+    }
+
+    @Override
+    public void guardar(Asignacion asignacion) {
+        if (asignacion == null) {
+            throw new IllegalArgumentException("La asignación no puede ser nula");
+        }
+        asignacionRepository.save(asignacion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Asignacion> encontrarTodas() {
+        return asignacionRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Asignacion> encontrarPorEmpleadoId(Long empleadoId) {
+        if (empleadoId == null || empleadoId <= 0) {
+            throw new IllegalArgumentException("ID de empleado inválido: " + empleadoId);
+        }
+        return asignacionRepository.findByEmpleadoId(empleadoId);
     }
 
 }

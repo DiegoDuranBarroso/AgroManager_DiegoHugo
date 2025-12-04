@@ -25,4 +25,12 @@ public interface AsignacionService {
     Asignacion cerrarAsignacion(Long asignacionId, LocalDate fechaFin);
 
     void eliminarAsignacion(Long asignacionId);
+
+    void guardar(Asignacion asignacion);
+
+    List<Asignacion> encontrarPorEmpleadoId(Long empleadoId);
+
+
+
+
 }

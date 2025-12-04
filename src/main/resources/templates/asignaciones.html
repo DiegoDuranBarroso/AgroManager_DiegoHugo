@@ -47,6 +47,25 @@
             </a>
         </div>
 
+        <!-- FILTRO POR EMPLEADO -->
+        <form class="row g-2 mb-4" th:action="@{/asignaciones/}" method="get">
+            <div class="col-md-4">
+                <label class="form-label text-dark">Empleado</label>
+                <select class="form-select" name="empleadoId">
+                    <option value="" th:text="'-- Todos --'"></option>
+                    <option th:each="emp : ${empleados}"
+                            th:value="${emp.id}"
+                            th:selected="${empleadoSeleccionado != null and empleadoSeleccionado == emp.id}"
+                            th:text="${emp.nombre + ' (' + emp.dni + ')'}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-success me-2">Filtrar</button>
+                <a th:href="@{/asignaciones/}" class="btn btn-outline-secondary">Limpiar</a>
+            </div>
+        </form>
+
         <div class="card shadow-sm">
             <div class="card-body p-0">
 
@@ -79,22 +98,26 @@
                         </td>
 
                         <td>
-                            <!-- Cerrar si está activa -->
+                            <!-- Botón EDITAR -->
+                            <a class="btn btn-sm btn-warning me-1"
+                               th:href="@{|/asignaciones/${asig.id}/editar|}">
+                                Editar
+                            </a>
+
+                            <!-- Cerrar asignación si está activa -->
                             <form th:if="${asig.activa}"
                                   th:action="@{|/asignaciones/${asig.id}/cerrar|}"
-                                  method="post"
-                                  class="d-inline">
-                                <button class="btn btn-sm btn-warning"
+                                  method="post" class="d-inline">
+                                <button class="btn btn-sm btn-primary"
                                         onclick="return confirm('¿Cerrar esta asignación?')">
                                     Cerrar
                                 </button>
                             </form>
 
-                            <!-- Eliminar si NO está activa -->
+                            <!-- Eliminar asignación si NO está activa -->
                             <form th:if="${!asig.activa}"
                                   th:action="@{|/asignaciones/${asig.id}/eliminar|}"
-                                  method="post"
-                                  class="d-inline">
+                                  method="post" class="d-inline">
                                 <button class="btn btn-sm btn-danger"
                                         onclick="return confirm('¿Eliminar definitivamente esta asignación?')">
                                     Eliminar
@@ -116,7 +139,6 @@
 
     </div>
 </div>
-
 
 <footer style="background-color: #1e1e1e; padding: 25px 0;">
     <div class="container text-center text-white">
