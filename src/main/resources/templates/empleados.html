@@ -19,19 +19,36 @@
 
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
+        <!-- IZQUIERDA: logo + texto (igual que antes) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <span class="navbar-text text-white"
-              th:text="'👤 ' + ${gerente.nombre}">
-            👤 Nombre gerente
-        </span>
+        <!-- DERECHA: chip de perfil SOLO INFORMATIVO (sin enlace) -->
+        <div class="d-flex align-items-center profile-chip">
+
+            <span class="profile-name me-3"
+                  th:text="${gerente.nombre}">
+                Nombre gerente
+            </span>
+
+            <div class="profile-avatar">
+                <!-- Si el usuario tiene foto de perfil -->
+                <img th:if="${gerente.usuario != null and gerente.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${gerente.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <!-- Si NO tiene foto, icono por defecto -->
+                <i th:if="${gerente.usuario == null or gerente.usuario.fotoPerfil == null}"
+                   class="bi bi-person-fill"></i>
+            </div>
+        </div>
 
     </div>
 </nav>

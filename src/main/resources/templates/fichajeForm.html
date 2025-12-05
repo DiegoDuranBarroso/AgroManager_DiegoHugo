@@ -17,22 +17,44 @@
 <body>
 
 <!-- NAVBAR -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
+        <!-- Logo + texto EMPLEADO -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 🦺 Empleado</span>
         </a>
 
-        <span class="navbar-text text-white"
-              th:text="'👤 ' + ${empleado.nombre}">
-            👤 Nombre empleado
-        </span>
+        <!-- CHIP INFORMATIVO DE PERFIL (solo empleado, sin enlace) -->
+        <div class="d-flex align-items-center profile-chip">
+
+            <!-- Nombre del empleado -->
+            <span class="profile-name me-3"
+                  th:text="${empleado.nombre}">
+                Nombre empleado
+            </span>
+
+            <!-- Avatar -->
+            <div class="profile-avatar">
+
+                <!-- Foto si existe -->
+                <img th:if="${empleado.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${empleado.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <!-- Icono si NO hay foto -->
+                <i th:if="${empleado.usuario.fotoPerfil == null}"
+                   class="bi bi-person-fill"></i>
+
+            </div>
+        </div>
 
     </div>
 </nav>
+
 
 <!-- ==== FONDO APLICADO ==== -->
 <div class="home-wrapper">

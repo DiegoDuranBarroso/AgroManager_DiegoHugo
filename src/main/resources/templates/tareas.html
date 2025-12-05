@@ -57,16 +57,15 @@
 
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- Logo + texto dinámico según EMPLEADO o GERENTE -->
+        <!-- Caja verde del logo + texto -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
-            <!-- Logo -->
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
 
-            <!-- Texto de la marca -->
             <span class="brand-text"
                   th:text="${modo == 'EMPLEADO'} ?
                            'AGROMANAGER - 🦺 Empleado' :
@@ -75,22 +74,41 @@
             </span>
         </a>
 
-        <!-- Nombre del usuario logueado (gerente) -->
-        <span class="navbar-text text-white"
-              th:if="${gerente != null}"
-              th:text="|👤 ${gerente.nombre}|">
-            👤 Nombre usuario
-        </span>
+        <!-- CHIP INFORMATIVO DE PERFIL (SIN ENLACE) -->
+        <div class="d-flex align-items-center text-decoration-none profile-chip">
 
-        <!-- Nombre del usuario logueado (empleado) -->
-        <span class="navbar-text text-white"
-              th:if="${gerente == null and empleadoSesion != null}"
-              th:text="|👤 ${empleadoSesion.nombre}|">
-            👤 Nombre usuario
-        </span>
+            <!-- NOMBRE (empleado o gerente) -->
+            <span class="profile-name me-3"
+                  th:text="${gerente != null} ?
+                           ${gerente.nombre} :
+                           ${empleadoSesion.nombre}">
+                Nombre usuario
+            </span>
+
+            <!-- AVATAR -->
+            <div class="profile-avatar">
+
+                <!-- FOTO SI EXISTE -->
+                <img th:if="${gerente != null and gerente.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${gerente.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <img th:if="${gerente == null and empleadoSesion != null
+                             and empleadoSesion.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${empleadoSesion.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <!-- ICONO SI NO HAY FOTO -->
+                <i th:if="${(gerente != null and gerente.usuario.fotoPerfil == null)
+                           or (empleadoSesion != null and empleadoSesion.usuario.fotoPerfil == null)}"
+                   class="bi bi-person-fill"></i>
+
+            </div>
+        </div>
 
     </div>
 </nav>
+
 
 <!-- === FONDO GLOBAL === -->
 <div class="home-wrapper">

@@ -22,20 +22,39 @@
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
+        <!-- Caja verde del logo (igual que tenías) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 🦺 Empleado</span>
         </a>
 
-        <!-- Nombre del empleado logueado -->
-        <span class="navbar-text text-white"
-              th:text="'👤 ' + ${empleado.nombre}">
-            👤 Nombre empleado
-        </span>
+        <!-- CHIP PERFIL A LA DERECHA (misma ruta /usuario/perfil) -->
+        <a th:href="@{/usuario/perfil}"
+           class="d-flex align-items-center text-decoration-none profile-chip">
+
+            <!-- Nombre del empleado -->
+            <span class="profile-name me-3"
+                  th:text="${empleado.nombre}">
+                Nombre empleado
+            </span>
+
+            <!-- Avatar de perfil -->
+            <div class="profile-avatar">
+                <!-- Si hay usuario y tiene fotoPerfil -->
+                <img th:if="${empleado.usuario != null and empleado.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${empleado.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <!-- Si NO hay foto, icono -->
+                <i th:if="${empleado.usuario == null or empleado.usuario.fotoPerfil == null}"
+                   class="bi bi-person-fill"></i>
+            </div>
+        </a>
 
     </div>
 </nav>
+
 
 <!-- CONTENIDO -->
 <div class="home-wrapper">

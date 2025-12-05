@@ -90,7 +90,6 @@ public class FichajeController {
         model.addAttribute("empleado", emp);
         model.addAttribute("fichajes", fichajeService.fichajesDeEmpleado(empleadoId));
 
-        // Si el que está logueado es gerente → vistaGerente activa
         if (usuario != null && usuario.getRol() == Rol.GERENTE) {
 
             Gerente gerente = gerenteRepository.findByUsuarioId(usuario.getId())
@@ -102,10 +101,17 @@ public class FichajeController {
             // para el filtro
             model.addAttribute("empleados", empleadoService.encontrarActivos());
             model.addAttribute("empleadoSeleccionado", empleadoId);
+
+        } else {
+            // Caso: empleado viendo sus fichajes
+            model.addAttribute("vistaGerente", false);
+            model.addAttribute("empleadoSesion", emp);  // ⬅️ IMPORTANTE PARA EL HEADER
         }
 
         return "fichaje";
     }
+
+
 
     // ================= NUEVO FICHAJE (inicio, solo empleado) =================
 

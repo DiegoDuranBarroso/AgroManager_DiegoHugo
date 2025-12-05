@@ -23,16 +23,33 @@
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
+        <!-- Caja verde del logo (igual que tenías) -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
             <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
         </a>
 
-        <span class="navbar-text text-white"
-              th:text="'👤 ' + ${gerente.nombre}">
-            👤 Nombre gerente
-        </span>
+        <!-- CHIP PERFIL A LA DERECHA -->
+        <a th:href="@{/usuario/perfil}"
+           class="d-flex align-items-center text-decoration-none profile-chip">
+
+            <span class="profile-name me-3"
+                  th:text="${gerente.nombre}">
+                Diego Durán Barroso
+            </span>
+
+            <div class="profile-avatar">
+                <!-- Si hay foto de perfil -->
+                <img th:if="${gerente.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${gerente.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+
+                <!-- Si NO hay foto, icono -->
+                <i th:if="${gerente.usuario.fotoPerfil == null}"
+                   class="bi bi-person-fill"></i>
+            </div>
+        </a>
 
     </div>
 </nav>
