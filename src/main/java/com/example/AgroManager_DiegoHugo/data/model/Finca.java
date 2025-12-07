@@ -23,7 +23,14 @@ public class Finca {
     @Column(length = 100)
     private String provincia;
 
+    @Column
     private Double area;
+
+    @Column
+    private Double latitud;
+
+    @Column
+    private Double longitud;
 
     @ManyToOne(optional = false)
     private Gerente gerente;
@@ -126,5 +133,22 @@ public class Finca {
 
     public void setTareas(List<Tarea> tareas) {
         this.tareas = tareas;
+    }
+
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 }

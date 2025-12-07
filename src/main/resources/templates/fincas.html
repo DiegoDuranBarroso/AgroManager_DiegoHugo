@@ -113,10 +113,12 @@
                         <td th:text="${finca.gerente != null ? finca.gerente.nombre : '—'}"></td>
 
                         <td>
-                            <a class="btn btn-sm btn-primary"
-                               th:href="@{|/fincas/${finca.id}/editar|}">
-                                Editar
+                            <a class="btn btn-sm btn-info"
+                               th:href="@{|/fincas/${finca.id}/detalle|}">
+                                Ver detalle
                             </a>
+
+
 
                             <form th:action="@{|/fincas/${finca.id}/eliminar|}"
                                   method="post"

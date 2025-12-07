@@ -32,10 +32,11 @@ INSERT IGNORE INTO empleado (id, dni, nombre, activo, usuario_id) VALUES
 --------------------------------
 -- FINCAS
 --------------------------------
-INSERT IGNORE INTO finca (id, nombre, estado, ciudad, provincia, area, gerente_id) VALUES
-(1, 'Finca El Olivar',    'SEMBRADA',      'Mérida',     'Badajoz', 12.50, 1),
-(2, 'Finca Los Naranjos', 'MANTENIMIENTO', 'Don Benito', 'Badajoz',  8.75, 1),
-(3, 'Finca La Viña',      'LISTA_COSECHA', 'Cáceres',    'Cáceres', 15.20, 1);
+INSERT IGNORE INTO finca (id, nombre, estado, ciudad, provincia, area, gerente_id, latitud, longitud) VALUES
+(1, 'Finca El Olivar',    'SEMBRADA',      'Mérida',    'Badajoz',  12.50, 1, 38.9170, -6.3430),
+(2, 'Finca Los Naranjos', 'MANTENIMIENTO', 'Don Benito','Badajoz',  8.75,  1, 38.9569, -5.8616),
+(3, 'Finca La Viña',      'LISTA_COSECHA', 'Cáceres',   'Cáceres',  15.20, 1, 39.4760, -6.3710);
+
 
 --------------------------------
 -- CONTRATOS

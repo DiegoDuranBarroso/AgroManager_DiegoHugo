@@ -1,0 +1,73 @@
+body { font-family: 'Poppins', sans-serif; }
+
+.fincaherocard {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+}
+
+.fincaheroheader {
+    background: linear-gradient(135deg, #4caf50, #1b5e20);
+    color: #fff;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fincatitle {
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.fincasubtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.badgeestado {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+.estadosembrada { background: #0d6efd; }
+.estadomantenimiento { background: #ffc107; color: #000; }
+.estadolistacosecha { background: #28a745; }
+.estadootro { background: #6c757d; }
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .75rem;
+    border-radius: 999px;
+    background-color: #e8f5e9;
+    font-size: 0.85rem;
+    margin-right: .4rem;
+    margin-bottom: .4rem;
+}
+
+#map {
+    width: 100%;
+    height: 320px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+.mapplaceholder {
+    border-radius: 18px;
+    border: 2px dashed rgba(0,0,0,0.2);
+    padding: 1.5rem;
+    text-align: center;
+    color: #555;
+    background: #fafafa;
+}
+
+.detallepanel {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}

@@ -34,7 +34,6 @@ public class FincaController {
         this.gerenteRepository = gerenteRepository;
     }
 
-
     // ================== LISTAR FINCAS ==================
     @GetMapping("/")
     public String listarFincas(Model model) {
@@ -51,17 +50,14 @@ public class FincaController {
         return "fincas";
     }
 
-
     // ================== NUEVA FINCA (GET) ==================
     @GetMapping("/nueva")
     public String mostrarFormularioNuevaFinca(Model model) {
 
-        // Obtener gerente en sesión
         Usuario usuario = usuarioService.obtenerUsuarioEnSesion()
                 .orElseThrow(() -> new IllegalStateException("No hay usuario en sesión"));
 
         if (usuario.getRol() != Rol.GERENTE) {
-            // Por seguridad, redirigimos
             return "redirect:/home";
         }
 
@@ -72,7 +68,7 @@ public class FincaController {
         model.addAttribute("estados", Arrays.asList(EstadoFinca.values()));
         model.addAttribute("gerente", gerente);
 
-        return "fincaNueva"; // nueva vista para crear fincas
+        return "fincaNueva";
     }
 
     // ================== NUEVA FINCA (POST) ==================
@@ -104,16 +100,14 @@ public class FincaController {
         if (provincia != null && !provincia.trim().isEmpty()) {
             finca.setProvincia(provincia.trim());
         }
-        finca.setArea(area); // puede ser null
+        finca.setArea(area);
 
         fincaService.guardar(finca);
 
         return "redirect:/fincas/";
     }
 
-    // ================== FORMULARIO EDITAR ==================
-    // ================== FORMULARIO EDITAR ==================
-// ================== FORMULARIO EDITAR ==================
+    // ================== FORMULARIO EDITAR (GET) ==================
     @GetMapping("/{id}/editar")
     public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
 
@@ -122,11 +116,8 @@ public class FincaController {
 
         model.addAttribute("finca", finca);
         model.addAttribute("estados", Arrays.asList(EstadoFinca.values()));
-
-        // lista de gerentes para el <select>
         model.addAttribute("gerentes", gerenteRepository.findAll());
 
-        // ---- gerente en sesión para el navbar ----
         usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
             if (usuario.getRol() == Rol.GERENTE) {
                 gerenteRepository.findByUsuarioId(usuario.getId())
@@ -134,13 +125,10 @@ public class FincaController {
             }
         });
 
-        return "fincaForm"; // templates/fincaForm.html
+        return "fincaForm";
     }
 
-
-
     // ================== POST EDITAR ==================
-// ================== POST EDITAR ==================
     @PostMapping("/{id}")
     public String actualizarFinca(
             @PathVariable Long id,
@@ -149,54 +137,60 @@ public class FincaController {
             @RequestParam("estado") EstadoFinca estado,
             @RequestParam(required = false) String ciudad,
             @RequestParam(required = false) String provincia,
-            @RequestParam(required = false) Double area) {
+            @RequestParam(required = false) Double area,
+            @RequestParam(required = false) Double latitud,
+            @RequestParam(required = false) Double longitud
+    ) {
 
         Finca finca = fincaService.encontrarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
-        // actualizar nombre
         finca.setNombre(nombre != null ? nombre.trim() : null);
 
-        // actualizar gerente
         Gerente nuevoGerente = gerenteRepository.findById(gerenteId)
                 .orElseThrow(() -> new IllegalArgumentException("Gerente no encontrado"));
         finca.setGerente(nuevoGerente);
 
-        // actualizar estado
         finca.setEstado(estado);
 
-        // ciudad
-        if (ciudad != null && !ciudad.trim().isEmpty()) {
-            finca.setCiudad(ciudad.trim());
-        } else {
-            finca.setCiudad(null);
-        }
-
-        // provincia
-        if (provincia != null && !provincia.trim().isEmpty()) {
-            finca.setProvincia(provincia.trim());
-        } else {
-            finca.setProvincia(null);
-        }
-
-        // área (puede ser null)
+        finca.setCiudad((ciudad != null && !ciudad.trim().isEmpty()) ? ciudad.trim() : null);
+        finca.setProvincia((provincia != null && !provincia.trim().isEmpty()) ? provincia.trim() : null);
         finca.setArea(area);
+
+        finca.setLatitud(latitud);
+        finca.setLongitud(longitud);
 
         fincaService.guardar(finca);
 
-        return "redirect:/fincas/";
+        // 👉 redirige al detalle con el patrón correcto
+        return "redirect:/fincas/" + id + "/detalle";
     }
-
 
     // ================== ELIMINAR FINCA ==================
     @PostMapping("/{id}/eliminar")
     public String eliminarFinca(@PathVariable Long id) {
 
-        fincaService.eliminarPorId(id); // ya hace el borrado en cascada manual
+        fincaService.eliminarPorId(id);
         return "redirect:/fincas/";
     }
 
+    // ================== DETALLE FINCA ==================
+    @GetMapping("/{id}/detalle")
+    public String verDetalleFinca(@PathVariable Long id, Model model) {
 
+        Finca finca = fincaService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
 
+        model.addAttribute("finca", finca);
 
+        usuarioService.obtenerUsuarioEnSesion().ifPresent(usuario -> {
+            if (usuario.getRol() == Rol.GERENTE) {
+                gerenteRepository.findByUsuarioId(usuario.getId())
+                        .ifPresent(g -> model.addAttribute("gerente", g));
+            }
+        });
+
+        // 👉 aquí se devuelve la vista, NO un redirect
+        return "fincaDetalle";
+    }
 }

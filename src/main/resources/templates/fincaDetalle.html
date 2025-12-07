@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|${finca.nombre} - AgroManager|">Detalle finca</title>
+
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    <link rel="stylesheet" th:href="@{/css/encabezado.css}">
+    <link rel="stylesheet" th:href="@{/css/fondos2.css}">
+    <link rel="stylesheet" th:href="@{/css/fincaDetalle.css}">
+
+    <!-- Bootstrap / iconos / fuente (necesarios para grid y chips) -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark bg-success">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+        <a class="navbar-brand d-flex align-items-center brand-box"
+           th:href="@{/home}">
+            <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
+            <span class="brand-text">AGROMANAGER - 👔 Gerente</span>
+        </a>
+
+        <div class="d-flex align-items-center profile-chip" th:if="${gerente != null}">
+            <span class="profile-name me-3" th:text="${gerente.nombre}">
+                Nombre gerente
+            </span>
+
+            <div class="profile-avatar">
+                <img th:if="${gerente.usuario != null and gerente.usuario.fotoPerfil != null}"
+                     th:src="@{|/uploads/${gerente.usuario.fotoPerfil}|}"
+                     alt="Foto perfil">
+                <i th:if="${gerente.usuario == null or gerente.usuario.fotoPerfil == null}"
+                   class="bi bi-person-fill"></i>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<div class="home-wrapper">
+    <div class="home-content container">
+
+        <div class="fincaherocard mt-3">
+
+            <!-- HEADER -->
+            <div class="fincaheroheader">
+                <div>
+                    <div class="fincatitle" th:text="${finca.nombre}">Finca El Olivar</div>
+                    <div class="fincasubtitle">
+                        <span th:text="${finca.ciudad != null ? finca.ciudad : 'Sin ciudad'}"></span>
+                        <span th:if="${finca.provincia != null}"
+                              th:text="', ' + ${finca.provincia}"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="badgeestado"
+                          th:classappend="${
+                               finca.estado.name() == 'SEMBRADA'      ? ' estadosembrada'      :
+                               (finca.estado.name() == 'MANTENIMIENTO' ? ' estadomantenimiento' :
+                               (finca.estado.name() == 'LISTA_COSECHA' ? ' estadolistacosecha'  :
+                                                                         ' estadootro'))
+                          }"
+                          th:text="${finca.estado}">
+                        SEMBRADA
+                    </span>
+                </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="fincabody">
+
+                <!-- CHIPS -->
+                <div class="mb-3">
+                    <div class="chip">
+                        <i class="bi bi-rulers"></i>
+                        <span th:text="${finca.area != null ? finca.area + ' ha' : 'Área no definida'}">
+                            12.5 ha
+                        </span>
+                    </div>
+
+                    <div class="chip" th:if="${finca.gerente != null}">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span th:text="${finca.gerente.nombre}">Carlos García</span>
+                    </div>
+
+                    <div class="chip" th:if="${finca.latitud != null and finca.longitud != null}">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Coordenadas guardadas</span>
+                    </div>
+                </div>
+
+                <!-- MAPA + DETALLE EN DOS COLUMNAS -->
+                <div class="row g-4 mt-3 align-items-start">
+
+                    <!-- COLUMNA MAPA -->
+                    <div class="col-md-8">
+                        <!-- Div con data-* para que JS lea las coords -->
+                        <div th:if="${finca.latitud != null and finca.longitud != null}"
+                             id="map"
+                             th:attr="data-lat=${finca.latitud},
+                                      data-lng=${finca.longitud},
+                                      data-name=${finca.nombre}">
+                        </div>
+
+                        <div th:if="${finca.latitud == null or finca.longitud == null}"
+                             class="mapplaceholder">
+                            <i class="bi bi-map fs-3 mb-2 d-block"></i>
+                            <p class="mb-0">
+                                Aún no hay coordenadas para esta finca.<br>
+                                Añádelas para ver el mapa interactivo aquí.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DETALLE RÁPIDO -->
+                    <div class="col-md-4">
+                        <div class="detallepanel p-3">
+                            <h5 class="fw-semibold mb-3">Detalle rápido</h5>
+
+                            <p class="mb-1">
+                                <strong>Estado:</strong>
+                                <span th:text="${finca.estado}">SEMBRADA</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Ciudad:</strong>
+                                <span th:text="${finca.ciudad}">Mérida</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Provincia:</strong>
+                                <span th:text="${finca.provincia}">Badajoz</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Área:</strong>
+                                <span th:text="${finca.area != null ? finca.area + ' ha' : '—'}">
+                                    12.5 ha
+                                </span>
+                            </p>
+                            <p class="mb-1" th:if="${finca.latitud != null}">
+                                <strong>Latitud:</strong>
+                                <span th:text="${finca.latitud}">38.9</span>
+                            </p>
+                            <p class="mb-1" th:if="${finca.longitud != null}">
+                                <strong>Longitud:</strong>
+                                <span th:text="${finca.longitud}">-6.3</span>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-4">
+                    <a class="btn btn-success w-100 mb-2"
+                       th:href="@{|/fincas/${finca.id}/editar|}">
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Editar finca
+                    </a>
+
+                    <a class="btn btn-outline-secondary w-100"
+                       th:href="@{/fincas/}">
+                        Volver al listado
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer style="background-color: #1e1e1e; padding: 25px 0;">
+    <div class="container text-center text-white">
+        <p class="mb-2">
+            © 2025 <strong>AgroManager</strong> — Todos los derechos reservados.
+        </p>
+        <p class="mb-0 text-secondary">
+            APP creada por <strong>Diego Durán Barroso</strong> y
+            <strong>Hugo Sánchez de la Roda Rivera</strong>.
+        </p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS (por si lo necesitas para otros componentes) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Tu JS de la vista -->
+<script src="/js/fincaDetalle.js"></script>
+
+</body>
+</html>
