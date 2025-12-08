@@ -8,8 +8,10 @@ import com.example.AgroManager_DiegoHugo.data.model.Usuario;
 import com.example.AgroManager_DiegoHugo.data.repositories.GerenteRepository;
 import com.example.AgroManager_DiegoHugo.data.services.EmpleadoService;
 import com.example.AgroManager_DiegoHugo.data.services.FincaService;
+import com.example.AgroManager_DiegoHugo.data.services.IaFincaService;
 import com.example.AgroManager_DiegoHugo.data.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +25,18 @@ public class FincaController {
     private final FincaService fincaService;
     private final UsuarioService usuarioService;
     private final GerenteRepository gerenteRepository;
+    private final IaFincaService iaFincaService;
 
     @Autowired
     public FincaController(FincaService fincaService,
                            UsuarioService usuarioService,
                            GerenteRepository gerenteRepository,
-                           EmpleadoService empleadoService) {
+                           EmpleadoService empleadoService,
+                           IaFincaService iaFincaService) {
         this.fincaService = fincaService;
         this.usuarioService = usuarioService;
         this.gerenteRepository = gerenteRepository;
+        this.iaFincaService = iaFincaService;
     }
 
     // ================== LISTAR FINCAS ==================
@@ -190,7 +195,19 @@ public class FincaController {
             }
         });
 
-        // 👉 aquí se devuelve la vista, NO un redirect
-        return "fincaDetalle";
+        return "fincaDetalle";  // asegura que aquí devuelves la vista, NO un redirect
+    }
+
+    // ================== IA: SUGERENCIAS PARA ESTA FINCA ==================
+    @PostMapping("/{id}/sugerencias-ia")
+    @ResponseBody
+    public ResponseEntity<String> sugerenciasIa(@PathVariable Long id) {
+
+        Finca finca = fincaService.encontrarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Finca no encontrada"));
+
+        String sugerencias = iaFincaService.generarSugerenciasParaFinca(finca);
+
+        return ResponseEntity.ok(sugerencias);
     }
 }

@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/fondos2.css}">
     <link rel="stylesheet" th:href="@{/css/fincaDetalle.css}">
 
-    <!-- Bootstrap / iconos / fuente (necesarios para grid y chips) -->
+    <!-- Bootstrap / iconos / fuente -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet"
@@ -70,10 +70,10 @@
                 <div>
                     <span class="badgeestado"
                           th:classappend="${
-                               finca.estado.name() == 'SEMBRADA'      ? ' estadosembrada'      :
+                               finca.estado.name() == 'SEMBRADA'       ? ' estadosembrada'      :
                                (finca.estado.name() == 'MANTENIMIENTO' ? ' estadomantenimiento' :
                                (finca.estado.name() == 'LISTA_COSECHA' ? ' estadolistacosecha'  :
-                                                                         ' estadootro'))
+                                                                        ' estadootro'))
                           }"
                           th:text="${finca.estado}">
                         SEMBRADA
@@ -85,7 +85,7 @@
             <div class="fincabody">
 
                 <!-- CHIPS -->
-                <div class="mb-3">
+                <div class="mb-3 mt-2">
                     <div class="chip">
                         <i class="bi bi-rulers"></i>
                         <span th:text="${finca.area != null ? finca.area + ' ha' : 'Área no definida'}">
@@ -158,28 +158,80 @@
                                 <strong>Longitud:</strong>
                                 <span th:text="${finca.longitud}">-6.3</span>
                             </p>
+
+                            <!-- BOTÓN REDONDO IA DEBAJO DEL DETALLE -->
+                            <div class="text-center mt-3">
+                                <button type="button"
+                                        id="btnIaFinca"
+                                        class="btn-ia-rounded"
+                                        title="Sugerencias IA">
+                                    <i class="bi bi-stars"></i>
+                                </button>
+                                <div class="small text-muted mt-1">Sugerencias IA</div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- BOTONES -->
-                <div class="mt-4">
-                    <a class="btn btn-success w-100 mb-2"
+                <!-- BOTONES INFERIORES (SIN IA) -->
+                <div class="mt-3 d-flex flex-column flex-sm-row gap-2">
+
+                    <!-- Editar -->
+                    <a class="btn btn-success flex-fill"
                        th:href="@{|/fincas/${finca.id}/editar|}">
                         <i class="bi bi-pencil-square me-1"></i>
-                        Editar finca
+                        Editar
                     </a>
 
-                    <a class="btn btn-outline-secondary w-100"
+                    <!-- Volver -->
+                    <a class="btn btn-outline-secondary flex-fill"
                        th:href="@{/fincas/}">
-                        Volver al listado
+                        Volver
                     </a>
                 </div>
 
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- MODAL SUGERENCIAS IA -->
+<div class="modal fade" id="modalSugerenciasIa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Sugerencias IA para esta finca
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="iaLoading" class="d-none">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border me-2" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <span>Generando sugerencias, por favor espera...</span>
+                    </div>
+                </div>
+
+                <div id="iaContent" class="mt-2" style="white-space: pre-line;"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -195,14 +247,60 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS (por si lo necesitas para otros componentes) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Tu JS de la vista -->
+<!-- JS del mapa -->
 <script src="/js/fincaDetalle.js"></script>
+
+<!-- JS IA: botón redondo + modal -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        // ID de la finca para el endpoint
+        var fincaId = /*[[${finca.id}]]*/ 0;
+
+        var btnIa = document.getElementById('btnIaFinca');
+        var modalElement = document.getElementById('modalSugerenciasIa');
+        var iaLoading = document.getElementById('iaLoading');
+        var iaContent = document.getElementById('iaContent');
+
+        if (!btnIa || !modalElement) {
+            return;
+        }
+
+        var bsModal = new bootstrap.Modal(modalElement);
+
+        btnIa.addEventListener('click', function () {
+            iaContent.textContent = '';
+            iaLoading.classList.remove('d-none');
+            bsModal.show();
+
+            fetch('/fincas/' + fincaId + '/sugerencias-ia', {
+                method: 'POST'
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Error HTTP: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(function (text) {
+                    iaLoading.classList.add('d-none');
+                    iaContent.textContent = text;
+                })
+                .catch(function (error) {
+                    iaLoading.classList.add('d-none');
+                    iaContent.textContent =
+                        'Ha ocurrido un error al obtener las sugerencias: ' + error;
+                });
+        });
+    });
+    /*]]>*/
+</script>
 
 </body>
 </html>

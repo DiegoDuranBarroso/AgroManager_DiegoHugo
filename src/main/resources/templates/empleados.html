@@ -23,7 +23,7 @@
 <nav class="navbar navbar-dark bg-success">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <!-- IZQUIERDA: logo + texto (igual que antes) -->
+        <!-- IZQUIERDA: logo + texto -->
         <a class="navbar-brand d-flex align-items-center brand-box"
            th:href="@{/home}">
             <img th:src="@{/img/favicon.png}" alt="Logo" class="brand-logo">
@@ -91,10 +91,10 @@
         <div class="card shadow-sm">
             <div class="card-body p-0">
 
-                <table class="table table-striped mb-0">
+                <table class="table table-striped mb-0 align-middle">
                     <thead class="table-success">
                     <tr>
-                        <th>ID</th>
+                        <th style="width: 70px;">Foto</th>
                         <th>DNI</th>
                         <th>Nombre</th>
                         <th>Activo</th>
@@ -104,13 +104,28 @@
 
                     <tbody>
                     <tr th:each="empleado : ${empleados}">
-                        <td th:text="${empleado.id}"></td>
+                        <!-- FOTO PERFIL -->
+                        <td class="text-center">
+                            <!-- Si tiene usuario con foto -->
+                            <img th:if="${empleado.usuario != null and empleado.usuario.fotoPerfil != null}"
+                                 th:src="@{|/uploads/${empleado.usuario.fotoPerfil}|}"
+                                 alt="Foto"
+                                 class="rounded-circle"
+                                 style="width: 42px; height: 42px; object-fit: cover;">
+                            <!-- Si no tiene, icono por defecto -->
+                            <div th:if="${empleado.usuario == null or empleado.usuario.fotoPerfil == null}"
+                                 class="d-inline-flex justify-content-center align-items-center rounded-circle bg-light"
+                                 style="width: 42px; height: 42px;">
+                                <i class="bi bi-person-fill text-secondary" style="font-size: 1.4rem;"></i>
+                            </div>
+                        </td>
+
                         <td th:text="${empleado.dni}"></td>
                         <td th:text="${empleado.nombre}"></td>
 
                         <td>
                             <span th:text="${empleado.activo} ? 'Sí' : 'No'"
-                                  th:classappend="${empleado.activo} ? 'text-success' : 'text-danger'">
+                                  th:classappend="${empleado.activo} ? ' text-success' : ' text-danger'">
                             </span>
                         </td>
 
