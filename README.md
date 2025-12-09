@@ -7,7 +7,7 @@
 1. Requisitos
 2. Implementación BD
 3. Casos de Uso
-4. Diagrama (Entidades)
+4. Modelo de datos
 
 ---
 
@@ -141,25 +141,177 @@ disponibles para **Usuario**, **Gerente** y **Empleado**.
 | **25** | **Empleado**         | **Registrar fichaje fin**       | Registra la hora de fin de la jornada laboral y cierra el fichaje.                                        |
 | **26** | **Empleado**         | **Registrar tarea realizada**   | El empleado registra una tarea completada indicando tipo y duración.                                      |
 
-                      |
 
-# 4. Diagrama (Entidades) 🧭
+
+# 4. Modelo de datos 🧭
 
 El siguiente diagrama muestra el **modelo de datos principal** de AgroManager, donde se representan las entidades,
 relaciones y enumeraciones que conforman la base de datos.
 
 <img src="img/dclases.png" width="1200"/>
 
-### 📘 Descripción breve
 
-- **Usuario**: clase base que almacena credenciales y el **rol** del sistema (`GERENTE` o `EMPLEADO`).
-- **Gerente** y **Empleado**: extienden de `Usuario`.
-    - El **Gerente** gestiona las fincas y empleados.
-    - El **Empleado** realiza fichajes, tareas y genera nóminas.
-- **Finca**: contiene información de cada terreno agrícola y su **estado** (`SEMBRADA`, `MANTENIMIENTO`,
-  `LISTA_COSECHA`, `BARBECHO`).
-- **Asignacion**: relaciona empleados con fincas y fechas de trabajo.
-- **Contrato**: define el tipo (`TEMPORAL`, `INDEFINIDO`, `FIJO_DISCONTINUO`), fechas y salario base.
-- **Fichaje**: registra el inicio y fin de jornada.
-- **Tarea**: almacena actividades realizadas por el empleado.
-- **Nomina**: se genera a partir del contrato y fichajes del empleado.
+## 5.1. Tabla `usuario`
+
+Tabla base para las credenciales de acceso y datos de cuenta.
+
+| Campo         | Tipo (lógico) | Descripción                                   |
+|---------------|---------------|-----------------------------------------------|
+| `id` (PK)     | BIGINT        | Identificador único del usuario.             |
+| `email`       | VARCHAR       | Correo electrónico (único).                  |
+| `password`    | VARCHAR       | Contraseña cifrada.                          |
+| `rol`         | ENUM Rol      | Rol de la aplicación (`GERENTE`, `EMPLEADO`).|
+| `foto_perfil` | VARCHAR       | Nombre del fichero de imagen de perfil.      |
+| `activo`      | BOOLEAN       | Indica si la cuenta está activa.             |
+
+**Relaciones principales**
+
+- 1:1 con **Gerente** (un usuario puede ser gerente).
+- 1:1 con **Empleado** (un usuario puede ser empleado).
+
+---
+
+## 5.2. Tabla `gerente`
+
+Datos específicos del gerente.
+
+| Campo        | Tipo   | Descripción                           |
+|--------------|--------|---------------------------------------|
+| `id` (PK)    | BIGINT | Identificador del gerente.            |
+| `nombre`     | VARCHAR| Nombre y apellidos.                   |
+| `dni`        | VARCHAR| Documento identificativo.             |
+| `telefono`   | VARCHAR| Teléfono de contacto.                 |
+| `usuario_id` | BIGINT (FK) | Referencia a `usuario.id`.     |
+
+**Relaciones**
+
+- 1:N con **Finca** (un gerente gestiona muchas fincas).
+- 1:N con **Empleado** (un gerente puede gestionar múltiples empleados, según diseño lógico del proyecto).
+
+---
+
+## 5.3. Tabla `empleado`
+
+Representa a los trabajadores de la empresa.
+
+| Campo        | Tipo   | Descripción                                       |
+|--------------|--------|---------------------------------------------------|
+| `id` (PK)    | BIGINT | Identificador del empleado.                       |
+| `dni`        | VARCHAR| DNI del empleado (único).                         |
+| `nombre`     | VARCHAR| Nombre y apellidos.                               |
+| `telefono`   | VARCHAR| Teléfono de contacto.                             |
+| `activo`     | BOOLEAN| Indica si el empleado sigue en plantilla.         |
+| `usuario_id` | BIGINT (FK) | Referencia a `usuario.id` (si puede iniciar sesión). |
+
+**Relaciones**
+
+- 1:N con **Asignacion** (un empleado puede trabajar en varias fincas a lo largo del tiempo).
+- 1:N con **Contrato**.
+- 1:N con **Fichaje**.
+- 1:N con **Tarea**.
+- 1:N con **Nomina**.
+
+---
+
+## 5.4. Tabla `finca`
+
+Información de cada finca agrícola.
+
+| Campo        | Tipo              | Descripción                                      |
+|--------------|-------------------|--------------------------------------------------|
+| `id` (PK)    | BIGINT            | Identificador de la finca.                       |
+| `nombre`     | VARCHAR           | Nombre de la finca.                              |
+| `ciudad`     | VARCHAR           | Ciudad donde se ubica.                           |
+| `provincia`  | VARCHAR           | Provincia.                                       |
+| `area`       | DECIMAL           | Superficie en hectáreas.                         |
+| `estado`     | ENUM EstadoFinca  | Estado actual (`SEMBRADA`, `MANTENIMIENTO`, `LISTA_COSECHA`, `BARBECHO`). |
+| `latitud`    | DECIMAL           | Coordenada de latitud.                           |
+| `longitud`   | DECIMAL           | Coordenada de longitud.                          |
+| `gerente_id` | BIGINT (FK)       | Gerente responsable (`gerente.id`).              |
+
+**Relaciones**
+
+- 1:N con **Asignacion** (empleados asignados a una finca).
+- 1:N con **Tarea** (tareas realizadas en esta finca).
+
+---
+
+## 5.5. Tabla `asignacion`
+
+Une **empleados** y **fincas** durante un intervalo de tiempo.
+
+| Campo          | Tipo   | Descripción                                      |
+|----------------|--------|--------------------------------------------------|
+| `id` (PK)      | BIGINT | Identificador de la asignación.                  |
+| `empleado_id`  | BIGINT (FK) | Referencia a `empleado.id`.               |
+| `finca_id`     | BIGINT (FK) | Referencia a `finca.id`.                  |
+| `fecha_inicio` | DATE   | Fecha de inicio de la asignación.               |
+| `fecha_fin`    | DATE   | Fecha de fin (puede ser nula si sigue activa).  |
+| `activa`       | BOOLEAN| Marca si la asignación está vigente.            |
+
+---
+
+## 5.6. Tabla `contrato`
+
+Contratos laborales de cada empleado.
+
+| Campo          | Tipo               | Descripción                                             |
+|----------------|--------------------|---------------------------------------------------------|
+| `id` (PK)      | BIGINT             | Identificador del contrato.                             |
+| `empleado_id`  | BIGINT (FK)        | Referencia a `empleado.id`.                             |
+| `tipo`         | ENUM TipoContrato  | Tipo (`TEMPORAL`, `INDEFINIDO`, `FIJO_DISCONTINUO`).    |
+| `fecha_inicio` | DATE               | Inicio de vigencia.                                     |
+| `fecha_fin`    | DATE               | Fin de vigencia (puede ser nula).                       |
+| `salario_base` | DECIMAL            | Salario base mensual.                                   |
+| `tarifa_hora`  | DECIMAL            | Importe por hora trabajada.                             |
+
+---
+
+## 5.7. Tabla `fichaje`
+
+Registra el control horario de los empleados.
+
+| Campo            | Tipo     | Descripción                                          |
+|------------------|----------|------------------------------------------------------|
+| `id` (PK)        | BIGINT   | Identificador del fichaje.                           |
+| `empleado_id`    | BIGINT (FK) | Referencia a `empleado.id`.                    |
+| `fecha_hora_ini` | DATETIME | Fecha y hora de inicio de la jornada.               |
+| `fecha_hora_fin` | DATETIME | Fecha y hora de fin (cuando se cierra el fichaje).  |
+| `duracion_horas` | DECIMAL  | Horas totales calculadas (campo de apoyo).          |
+
+---
+
+## 5.8. Tabla `tarea`
+
+Tareas realizadas por los empleados.
+
+| Campo        | Tipo   | Descripción                                   |
+|--------------|--------|-----------------------------------------------|
+| `id` (PK)    | BIGINT | Identificador de la tarea.                    |
+| `empleado_id`| BIGINT (FK) | Empleado que realiza la tarea.         |
+| `finca_id`   | BIGINT (FK) | Finca donde se realiza.                 |
+| `descripcion`| VARCHAR| Descripción detallada de la actividad.        |
+| `fecha`      | DATE   | Día en que se realiza la tarea.               |
+| `horas`      | DECIMAL| Tiempo invertido en la tarea.                 |
+
+---
+
+
+## 5.10. Enumeraciones
+
+- **`Rol`**
+    - `GERENTE`
+    - `EMPLEADO`
+
+- **`EstadoFinca`**
+    - `SEMBRADA`
+    - `MANTENIMIENTO`
+    - `LISTA_COSECHA`
+    - `BARBECHO`
+
+- **`TipoContrato`**
+    - `TEMPORAL`
+    - `INDEFINIDO`
+    - `FIJO_DISCONTINUO`
+
+Este modelo de datos es el que se ha implementado en **MySQL** mediante entidades JPA en el proyecto **AgroManager**, y es coherente con los casos de uso y el diagrama de clases incluidos en el documento.
