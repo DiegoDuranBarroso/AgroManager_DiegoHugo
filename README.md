@@ -31,7 +31,7 @@
 ## 📖 Resumen
 
 La aplicación web **AgroManager** debe permitir a los responsables de fincas gestionar trabajadores, controlar su
-jornada laboral, generar nóminas y conocer en tiempo real la ubicación de los empleados y el estado de las fincas.
+jornada laboral, generar contratos y conocer en tiempo real la ubicación de los empleados y el estado de las fincas.
 
 ## 📌 Descripción
 
@@ -209,7 +209,6 @@ Representa a los trabajadores de la empresa.
 - 1:N con **Contrato**.
 - 1:N con **Fichaje**.
 - 1:N con **Tarea**.
-- 1:N con **Nomina**.
 
 ---
 
